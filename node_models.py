@@ -1,5 +1,5 @@
 from typing import TypedDict
 
-class SampleAgentResponse(TypedDict):
-    topic: str
-    instances: str
+class AgentRunningState(TypedDict):
+    pre_execute: dict
+    on_execute: dict
