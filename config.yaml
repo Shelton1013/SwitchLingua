@@ -1,5 +1,8 @@
 pre_execute:
-  cs_ratio: 0.5
+  cs_ratio:
+    - "Low"
+    - "Medium"
+    - "High"
   use_tools: true
   topics:
     - "Tourism"
@@ -17,7 +20,7 @@ pre_execute:
     - "Third Person"
   character_setting:
     nationality:
-      first_language: "Chinese"
+      first_language: "Cantonese"
       second_language: "English"
     age:
       - "8-17"
@@ -34,7 +37,8 @@ pre_execute:
       - "Master"
       - "Doctor"
   output_type:
-    "single_turn"
+    - "single_turn"
+    - "multi-turn"
   output_format:
     "json"
     
@@ -42,5 +46,6 @@ pre_execute:
 
 on_execute:
   round: 1
+  verbose: true
 
 

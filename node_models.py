@@ -1,5 +1,14 @@
 from typing import TypedDict
 
 class AgentRunningState(TypedDict):
-    pre_execute: dict
-    on_execute: dict
+    topic: str
+    tense: str
+    perspective: str
+    cs_ratio: str
+    gender: str
+    age: str
+    education_level: str
+    first_language: str
+    second_language: str
+    response: str
+        

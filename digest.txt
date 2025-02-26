@@ -1,0 +1,191 @@
+Directory structure:
+└── .//
+    ├── node_models.py
+    ├── config.yaml
+    ├── README.md
+    ├── utils.py
+    ├── node_engine.py
+    ├── prompt.py
+    └── main.py
+
+================================================
+File: /node_models.py
+================================================
+from typing import TypedDict
+
+class AgentRunningState(TypedDict):
+    pre_execute: dict
+    on_execute: dict
+    def get_sample_agent_param():
+        
+
+
+================================================
+File: /config.yaml
+================================================
+pre_execute:
+  cs_ratio: 0.5
+  use_tools: true
+  topics:
+    - "Tourism"
+    - "Weather"
+    - "Shopping"
+    - "Food"
+    - "Exam"
+    - "Politics"
+  tense:
+    - "Past"
+    - "Present"
+    - "Future"
+  perspective:
+    - "First Person"
+    - "Third Person"
+  character_setting:
+    nationality:
+      first_language: "Chinese"
+      second_language: "English"
+    age:
+      - "8-17"
+      - "18-25"
+      - "26-35"
+      - "56-65"
+      - "66+"
+    gender:
+      - "Male"
+      - "Female"
+    education_level:
+      - "High School"
+      - "College"
+      - "Master"
+      - "Doctor"
+  output_type:
+    "single_turn"
+  output_format:
+    "json"
+    
+  
+
+on_execute:
+  round: 1
+
+
+
+
+================================================
+File: /README.md
+================================================
+# SwitchLingua
+
+================================================
+File: /utils.py
+================================================
+import yaml
+
+def generate_initial_state():
+    with open("config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+    return config
+
+if __name__ == "__main__":
+    print(generate_initial_state())
+
+================================================
+File: /node_engine.py
+================================================
+import os
+import dotenv
+from langchain_openai import ChatOpenAI
+from prompt import SAMPLE_AGENT_PROMPT
+from node_models import AgentRunningState
+
+# for testing
+# #
+dotenv.load_dotenv()
+
+os.environ["OPENAI_API_KEY"] = os.getenv("AIPROXY_API_KEY")
+
+# SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="gpt-4o", temperature=1)
+
+def RunSampleAgent(state: AgentRunningState):
+    SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="o1-preview", temperature=1, base_url="https://apivip.aiproxy.io/v1")
+    response = SampleAgent.invoke({"language_a": "Cantonese", "language_b": "English", "tense": "Present", "person": "First Person", "type": "multi-turn"})
+    print(response.content)
+    return None
+if __name__ == "__main__":
+    # result = SampleAgent.invoke({"language_a": "Cantonese", "language_b": "English", "tense": "Present", "person": "First Person"})
+    # print(result.content)
+    pass
+
+================================================
+File: /prompt.py
+================================================
+from langchain_core.prompts import ChatPromptTemplate
+
+SAMPLE_AGENT_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "assistant",
+            """
+You are a DataGenerationAgent specialized in creating code-switched text in Language A and Language B. 
+You must:
+1. Output data in JSON format. 
+2. For each topic provided in the list, generate either single-turn or multi-turn code-switched examples that follow typical Language A-Language B mixing patterns.
+3. Make sure the text uses the language habits typical of a Language A speaker who also speaks Language B.
+4. Follow standard grammar rules for each language.
+5. Keep each instance coherent and relevant to the specified topic.
+6. Provide multiple examples across the list of topics.
+
+**Format Requirements:**
+- The output must be a JSON array of objects.
+- Each object has:
+- a "topic" field (e.g., "Weather").
+- an "instances" field which is an array of code-switched utterances or dialogues.
+- a "type" field which is either "single-turn" or "multi-turn".
+**Example Output Structure** (for a single-turn example in Cantonese-English Mixed Language):
+{{
+ "topic": "Weather",
+"instances": "今日個天咁藍,應該係個perfect day去hiking!"
+"type": "single-turn"
+}}
+
+**Language Requirements**
+- Language A: {language_a}
+- Language B: {language_b}
+- Tense: {tense}
+- Person: {person}
+- Type: {type}
+""".strip(),
+        )
+    ]
+)
+
+
+================================================
+File: /main.py
+================================================
+from langgraph.graph import StateGraph
+from utils import generate_initial_state
+from node_engine import RunSampleAgent
+from node_models import AgentRunningState
+class CodeSwitchingAgent:
+    def __init__(self):
+        self.initial_state = generate_initial_state()
+        self.workflow = self._construct_graph()
+        print(self.initial_state)
+
+    def run(self):
+        pass
+
+    def _construct_graph(self):
+        workflow = StateGraph(AgentRunningState)
+        workflow.add_node("SampleAgent", RunSampleAgent)
+        workflow.set_entry_point("SampleAgent")
+        return workflow.compile()
+    
+    def _run(self):
+        self.workflow.invoke(self.initial_state)
+
+if __name__ == "__main__":
+    agent = CodeSwitchingAgent()
+    agent._run()
+
