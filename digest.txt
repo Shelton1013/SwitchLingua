@@ -1,6 +1,145 @@
 Directory structure:
 └── .//
     ├── node_models.py
+    ├── result/
+    │   └── simple_agent_result.jsonl
+    ├── config.yaml
+    ├── agents.py
+    ├── README.md
+    ├── digest.txt
+    ├── logs/
+    ├── utils.py
+    ├── node_engine.py
+    ├── prompt.py
+    ├── main.py
+    └── test.ipynb
+
+================================================
+File: /node_models.py
+================================================
+from typing import TypedDict
+
+class AgentRunningState(TypedDict):
+    topic: str
+    tense: str
+    perspective: str
+    cs_ratio: str
+    gender: str
+    age: str
+    education_level: str
+    first_language: str
+    second_language: str
+    response: str
+        
+
+
+================================================
+File: /result/simple_agent_result.jsonl
+================================================
+{"topic": "Tourism", "tense": "Past", "perspective": "First Person", "cs_ratio": "Low", "gender": "Male", "age": "8-17", "education_level": "High School", "first_language": "Cantonese", "second_language": "English", "response": {"topic": "Tourism", "instances": [{"type": "single-turn", "instances": "上星期我去咗Disneyland，好開心玩晒佢啲rides，最正係Churros！"}, {"type": "single-turn", "instances": "有冇試過去石澳踩單車？啲海景真係amazing！"}, {"type": "multi-turn", "instances": [{"A": "去澳門嗰次，我哋食晒咁多種類food！"}, {"B": "係呀，葡撻真係唔錯！下次我哋一定要再去試埋Giant Buddha！"}]}, {"type": "multi-turn", "instances": [{"A": "記唔記得上次去Ocean Park？"}, {"B": "記得！嗰次玩水上樂園玩到濕晒，哈哈！"}, {"A": "我知，嗰度啲海豚show好正，仲有好多cute動物睇。"}]}]}}
+
+
+================================================
+File: /config.yaml
+================================================
+pre_execute:
+  cs_ratio:
+    - "Low"
+    - "Medium"
+    - "High"
+  use_tools: true
+  topics:
+    - "Tourism"
+    - "Weather"
+    - "Shopping"
+    - "Food"
+    - "Exam"
+    - "Politics"
+  tense:
+    - "Past"
+    - "Present"
+    - "Future"
+  perspective:
+    - "First Person"
+    - "Third Person"
+  character_setting:
+    nationality:
+      first_language: "Cantonese"
+      second_language: "English"
+    age:
+      - "8-17"
+      - "18-25"
+      - "26-35"
+      - "56-65"
+      - "66+"
+    gender:
+      - "Male"
+      - "Female"
+    education_level:
+      - "High School"
+      - "College"
+      - "Master"
+      - "Doctor"
+  output_type:
+    - "single_turn"
+    - "multi-turn"
+  output_format:
+    "json"
+    
+  
+
+on_execute:
+  round: 1
+  verbose: true
+
+
+
+
+================================================
+File: /agents.py
+================================================
+from langgraph.graph import StateGraph
+from loguru import logger
+from utils import load_config, generate_scenarios
+from node_engine import RunSampleAgent
+from node_models import AgentRunningState
+logger.add("logs/code_switching_agent.log")
+class CodeSwitchingAgent:
+    def __init__(self):
+        self.config: dict = load_config()
+        self.scenarios: list[AgentRunningState] = generate_scenarios(self.config['pre_execute'])
+        self.workflow: StateGraph = self._construct_graph()
+        # print(self.initial_state)
+
+    def run(self):
+        pass
+
+    def _construct_graph(self) -> StateGraph:
+        workflow = StateGraph(AgentRunningState)
+        workflow.add_node("SampleAgent", RunSampleAgent)
+        workflow.set_entry_point("SampleAgent")
+        return workflow.compile()
+    
+    def run(self):
+        for scenario in self.scenarios[:1]:
+            logger.info(f"🤖 Running scenario: {scenario}")
+            self.workflow.invoke(scenario)
+
+if __name__ == "__main__":
+    agent = CodeSwitchingAgent()
+    agent.run()
+
+================================================
+File: /README.md
+================================================
+# SwitchLingua
+
+================================================
+File: /digest.txt
+================================================
+Directory structure:
+└── .//
+    ├── node_models.py
     ├── config.yaml
     ├── README.md
     ├── utils.py
@@ -188,4 +327,415 @@ class CodeSwitchingAgent:
 if __name__ == "__main__":
     agent = CodeSwitchingAgent()
     agent._run()
+
+
+
+================================================
+File: /utils.py
+================================================
+import yaml
+from pprint import pprint
+from node_models import AgentRunningState
+def load_config():
+    # Each config file will generate a different scenarios ~1440
+    with open("config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+
+    return config
+
+
+import itertools
+
+def generate_scenarios(config: dict) -> list[AgentRunningState]:
+    """
+    Given a config dict, produce all possible scenario combinations
+    by taking the Cartesian product of relevant lists:
+      - topics
+      - tense
+      - perspective
+      - gender
+      - age
+      - education_level
+    """
+    # For quick reference
+    topics = config["topics"]
+    tenses = config["tense"]
+    perspectives = config["perspective"]
+    genders = config["character_setting"]["gender"]
+    ages = config["character_setting"]["age"]
+    edu_levels = config["character_setting"]["education_level"]
+    cs_ratios = config["cs_ratio"]
+
+    # Use itertools.product to combine them
+    all_scenarios = []
+    for (topic, tense, perspective, gender, age, edu_level, cs_ratio) in itertools.product(
+        topics, tenses, perspectives, genders, ages, edu_levels, cs_ratios
+    ):
+        scenario = {
+            "topic": topic,
+            "tense": tense,
+            "perspective": perspective,
+            "gender": gender,
+            "age": age,
+            "education_level": edu_level,
+            # If needed, you can also include the other single-value config fields:
+            "cs_ratio": cs_ratio,
+            "use_tools": config["use_tools"],
+            # ...
+            "first_language": config["character_setting"]["nationality"]["first_language"],
+            "second_language": config["character_setting"]["nationality"]["second_language"],
+        }
+        all_scenarios.append(scenario)
+
+    return all_scenarios
+
+if __name__ == "__main__":
+    # Here is your config dictionary (simplified for the example):
+    config = {
+        'character_setting': {
+            'age': ['8-17', '18-25', '26-35', '56-65', '66+'],
+            'education_level': ['High School','College','Master','Doctor'],
+            'gender': ['Male','Female'],
+            'nationality': {
+                'first_language': 'Cantonese',
+                'second_language': 'English'
+            }
+        },
+        'cs_ratio': 0.5,
+        'output_format': 'json',
+        'output_type': 'single_turn',
+        'perspective': ['First Person','Third Person'],
+        'tense': ['Past','Present','Future'],
+        'topics': ['Tourism','Weather','Shopping','Food','Exam','Politics'],
+        'use_tools': True
+    }
+
+    scenarios = generate_scenarios(config)
+    print(f"Generated {len(scenarios)} scenario combinations.")
+    # For a quick peek, let's print the first few
+    for i, sc in enumerate(scenarios[:10]):
+        print(f"Scenario #{i+1}:", sc)
+        print("\n")
+
+
+================================================
+File: /node_engine.py
+================================================
+import os
+import dotenv
+import jsonlines
+from langchain_openai import ChatOpenAI
+from prompt import SAMPLE_AGENT_PROMPT
+from node_models import AgentRunningState
+from pprint import pprint
+
+# for testing
+# #
+dotenv.load_dotenv()
+
+os.environ["OPENAI_API_KEY"] = os.getenv("AIPROXY_API_KEY")
+
+# SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="gpt-4o", temperature=1)
+
+def RunSampleAgent(state: AgentRunningState):
+    SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="gpt-4o", temperature=1, base_url="https://apivip.aiproxy.io/v1").with_structured_output(AgentRunningState)
+    response = SampleAgent.invoke(state)
+    #print(response.content)
+    #copy the state and add the response
+    payload = state.copy()
+    payload['response'] = response
+    with jsonlines.open("result/simple_agent_result.jsonl", "a") as f:
+        f.write(payload)
+    return {'response': response}
+if __name__ == "__main__":
+    # result = SampleAgent.invoke({"language_a": "Cantonese", "language_b": "English", "tense": "Present", "person": "First Person"})
+    # print(result.content)
+    pass
+
+================================================
+File: /prompt.py
+================================================
+from langchain_core.prompts import ChatPromptTemplate
+
+SAMPLE_AGENT_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "assistant",
+            """
+You are a DataGenerationAgent specialized in creating code-switched text in Language A and Language B given a specific persona and topic. 
+You must:
+1. Output data in JSON format. 
+2. For the topic provided, generate either single-turn or multi-turn code-switched examples that follow typical Language A-Language B mixing patterns.
+3. Make sure the text uses the language habits typical of a Language A speaker who also speaks Language B.
+4. Follow standard grammar rules for each language.
+5. Keep each instance coherent and relevant to the specified topic.
+6. Provide multiple examples across the list of topics.
+
+**Format Requirements:**
+- The output must be a JSON array of objects.
+- Each object has:
+- a "topic" field (e.g., "Weather").
+- an "instances" field which is an array of code-switched utterances or dialogues.
+- a "type" field which is either "single-turn" or "multi-turn".
+\n
+**Example Output Structure** (for a single-turn example in Cantonese-English Mixed Language):
+{{
+ "topic": "Weather",
+"instances": "今日個天咁藍,應該係個perfect day去hiking!"
+"type": "single-turn"
+}}
+\n
+**Example Output Structure** (for a multi-turn example in Cantonese-English Mixed Language):
+{{
+    "topic": "Sports",
+    "instances": [
+      "你今晚有冇睇football match？",
+      "有呀，我支持嗰隊贏咗喎！",
+      "咁好喇！我miss咗直播。",
+      "唔緊要，可以睇replay，一齊睇過？"
+    ],
+    "type": "multi-turn"
+}}
+\n
+**Language Requirements**
+- Language A: {first_language}
+- Language B: {second_language}
+- Tense: {tense}
+- Perspective: {perspective}
+- Code-switching ratio: {cs_ratio}
+\n
+**Persona**
+- Gender: {gender}
+- Age: {age}
+- Education Level: {education_level}
+\n
+**Topic**
+- Topic: {topic}
+""".strip(),
+        )
+    ]
+)
+
+
+================================================
+File: /test.ipynb
+================================================
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "241af5c234c39e440673b659eece63c5"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'totalArticles': 17806, 'articles': [{'title': '等效 450mm、18.8× 變焦天涯鏡 SIGMA 16-300mm F3.5-6.7 DC OS', 'description': '近期包括 Nikon 和 Panasonic 都推出高倍數 Zoom 鏡相機都引起不少討論，其實高倍數 Zoom 鏡一直都有唔少捧場客。最近日本 SIGMA 推出\\xa0 APS-C 無反相機用的天涯鏡 16-300mm F3.5-6.7 DC OS | Contemporary，相當於 24-450mm ，倍率約為 18.8x，並具備最高 6 級（廣角端）以及 4.5 級（望遠端）的防手震補償。相信會受一眾入門影友的歡迎...', 'content': '近期包括 Nikon 和 Panasonic 都推出高倍數 Zoom 鏡相機都引起不少討論，其實高倍數 Zoom 鏡一直都有唔少捧場客。最近日本 SIGMA 推出 APS-C 無反相機用的天涯鏡 16-300mm F3.5-6.7 DC OS | Contemporary，相當於 24-450mm，倍率約為 18.8×，並具備最高 6 級（廣角）以及 4.5 級（望遠）的防手震補償。相信會受一眾入門影友的歡迎。\\nSIGMA 16-300mm F3.5-6.7 DC OS 尺寸約為 73.8×73... [321 chars]', 'url': 'https://www.pcmarket.com.hk/sigma-16-300mm-zoom-lens-release-in-april/', 'image': 'https://cdn.pcmarket.com.hk/wp-content/uploads/2025/02/25193954/PCM_sigma_16300_lens_01.jpg', 'publishedAt': '2025-02-25T11:43:33Z', 'source': {'name': 'PCM', 'url': 'https://www.pcmarket.com.hk'}}, {'title': '小薯茄泳泳搭上健身教練！大婆鬧阿冰帶妹做免費Gym竟食人老公', 'description': 'YOUTUBER小薯茄吳冰（阿冰）胞妹吳泳傳出介入新婚健身教練婚姻，健身教練William新婚妻子Fafa在網上嬲爆發文，標籤阿冰爆料，疑似其妹出軌人夫，以', 'content': 'YOUTUBER小薯茄吳冰（阿冰）胞妹吳泳傳出介入新婚健身教練婚姻，健身教練William新婚妻子Fafa在網上嬲爆發文，標籤阿冰爆料，疑似其妹出軌人夫，以一張半裸女士躺左地上的照片為底圖，再配上字句：「我老公偷食小薯茄泳泳」，更有捉姦在床片段，事件震驚網絡。小薯茄在今日早上發聲明回應事件。到了今日下午，健身教練老婆Fafa再次於IG story出post繼續公開老公出軌事件內幕。\\n小薯茄吳冰（阿冰）胞妹吳泳突然被指出軌人夫。(ig圖片)\\n被指偷食的健身教練William，與太太Fafa僅結婚三... [703 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%A8%9B%E6%A8%82/60213938/%E5%B0%8F%E8%96%AF%E8%8C%84%E6%B3%B3%E6%B3%B3%E6%90%AD%E4%B8%8A%E5%81%A5%E8%BA%AB%E6%95%99%E7%B7%B4-%E5%A4%A7%E5%A9%86%E9%AC%A7%E9%98%BF%E5%86%B0%E5%B8%B6%E5%A6%B9%E5%81%9A%E5%85%8D%E8%B2%BBgym%E7%AB%9F%E9%A3%9F%E4%BA%BA%E8%80%81%E5%85%AC', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250225/971093026145308672168734.jpeg/O4np-pYSK2GM4FDpaUF-SHPkzwRd2TVbsgc6urIHOro', 'publishedAt': '2025-02-25T08:22:19Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '涉賣啟德體育園開幕禮假門票 3男女涉嫌企圖詐騙被捕', 'description': '啟德體育園3月1日舉行開幕典禮，售價10元的門票上周五（21日）開售，半小時內旋即售罄。網上有人買賣門票，最貴炒至1800元。對於網上有聲稱門票出', 'content': '啟德體育園3月1日舉行開幕典禮，售價10元的門票上周五（21日）開售，半小時內旋即售罄。網上有人買賣門票，最貴炒至1800元。對於網上有聲稱門票出售，文化體育及旅遊局局長羅淑佩早前呼籲巿民小心防騙，並指局方已與警方聯絡，會對炒賣門票情況有行動。\\n警方今日（25日）公布，已拘捕兩男一女，涉嫌賣假開幕門票，將於下午4時召開記者招待會講述詳情。據了解，初步調查顯示暫無損失。《香港01》將進行直播。\\n▼2月4日 啟德體育園主場館首次打開上蓋演練▼\\n+ 4\\n啟德體育園開幕禮門票採取實名制購買，但據悉只在巿... [735 chars]', 'url': 'https://www.hk01.com/%E7%AA%81%E7%99%BC/60213950/%E6%B6%89%E8%B3%A3%E5%95%9F%E5%BE%B7%E9%AB%94%E8%82%B2%E5%9C%92%E9%96%8B%E5%B9%95%E7%A6%AE%E5%81%87%E9%96%80%E7%A5%A8-3%E7%94%B7%E5%A5%B3%E6%B6%89%E5%AB%8C%E4%BC%81%E5%9C%96%E8%A9%90%E9%A8%99%E8%A2%AB%E6%8D%95', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250204/963516595227987968085976.jpeg/YHMmY8pNY_wbN9A_aSZMyZ8LSMAmPFJyUVmKHHRZihw?v=w1280r16_9', 'publishedAt': '2025-02-25T06:43:17Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '香港迪士尼止9年蝕勢 錄8.38億元淨利潤 770萬入場人次同創新高', 'description': '香港迪士尼樂園歷經連續9年虧損，最新2024財政年度終於止蝕，各項數據都創出開幕以來新高，包括錄得淨利潤8.38億元、770萬入場人次等，其中內地及', 'content': '香港迪士尼樂園歷經連續9年虧損，最新2024財政年度終於止蝕，各項數據都創出開幕以來新高，包括錄得淨利潤8.38億元、770萬入場人次等，其中內地及其他國家或地區旅客分佔38%及22%。此外，香港迪士尼已開始償還由港府和華特迪士尼提供的貸款，截至2025財政年度首季已償還60%。\\n香港迪士尼2024財政年度終轉虧為盈。（資料圖片／歐嘉樂攝）\\n開幕至今只有三年錄盈利 疫情下每年蝕逾20億元\\n香港迪士尼樂園度假區今日公布2023年10月1日至2024年9月28日的2024財政年度的業績，錄得自200... [1016 chars]', 'url': 'https://www.hk01.com/%E7%A4%BE%E6%9C%83%E6%96%B0%E8%81%9E/60213886/%E9%A6%99%E6%B8%AF%E8%BF%AA%E5%A3%AB%E5%B0%BC%E6%AD%A29%E5%B9%B4%E8%9D%95%E5%8B%A2-%E9%8C%848-38%E5%84%84%E5%85%83%E6%B7%A8%E5%88%A9%E6%BD%A4-770%E8%90%AC%E5%85%A5%E5%A0%B4%E4%BA%BA%E6%AC%A1%E5%90%8C%E5%89%B5%E6%96%B0%E9%AB%98', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250225/971050385294757888073825.jpeg/jzlNhHv7-gN6Eddv14b8PmvWFt-DFdT75l3KBeZdygU', 'publishedAt': '2025-02-25T05:45:43Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '全球首款 Dolby Vision 認證家用投影機！Optoma ZK777LV 雙雷射技術畫面夠準、夠光、夠晒靚', 'description': '全球首款 Dolby Vision 認證家用投影機 Optoma ZK777LV 表現到底係點？我們當然都好想知道，於是也第一時間借到 studio 測試一番。', 'content': 'Dolby Vision 和 4K 投影可說是相當絕配，相比起電視的 HDR 畫面有時太過明亮，投影畫面基本上很少會有過光的情況（更多會是亮度不足）。而 ZK777LV 的高亮度配合 Dolby Vision 的高動態，呈現到亮度十足同時對比層次細緻的畫面，配合本身豐富的色彩和 4K 解像度，畫面的確相當有電影感，投影 120 至 150 吋的畫面很有一個小影院的感覺，甚至有比戲院更佳的色彩和對比效果。而作為旗艦系列，ZK777LV 又保留了內置喇叭、檔案播放、投影到牆身的顏色修正等等入門機和商... [259 chars]', 'url': 'https://news.post76.hk/2025/02/optoma-zk777lv-review/', 'image': 'https://news.post76.hk/wp-content/uploads/2025/01/20250117_Optoma_PJ-copy.jpg', 'publishedAt': '2025-02-25T04:55:40Z', 'source': {'name': 'Post76', 'url': 'https://news.post76.hk'}}, {'title': '華碩ASUS ROG Flow Z13發佈 史上最強遊戲平板電腦登場？', 'description': '不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為', 'content': '華碩ASUS ROG Flow Z13發佈 史上最強遊戲平板電腦登場？\\n不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為「史上最強遊戲平板電腦」。\\nGPU 效能接近獨立顯示卡但功耗更低 ASUS ROG Flow Z13 搭載了... [956 chars]', 'url': 'https://www.am730.com.hk/%E7%A7%91%E6%8A%80/%E8%8F%AF%E7%A2%A9asus-rog-flow-z13%E7%99%BC%E4%BD%88-%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%BC%B7%E9%81%8A%E6%88%B2%E5%B9%B3%E6%9D%BF%E9%9B%BB%E8%85%A6%E7%99%BB%E5%A0%B4-/535509', 'image': 'https://cdn.am730.com.hk/s3fs-public/styles/banner_webp/public/2025-02/4ff74bc5a8dbf8f4dfde.webp?h=c6d4b9be&itok=jdZyFEqo×tamp=1740456928', 'publishedAt': '2025-02-25T04:00:00Z', 'source': {'name': 'AM730', 'url': 'https://www.am730.com.hk'}}, {'title': '華碩ASUS ROG Flow Z13發布 史上最強遊戲平板電腦登場？', 'description': '不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為', 'content': '華碩ASUS ROG Flow Z13發布 史上最強遊戲平板電腦登場？\\n不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為「史上最強遊戲平板電腦」。\\nGPU 效能接近獨立顯示卡但功耗更低 ASUS ROG Flow Z13 搭載了... [960 chars]', 'url': 'https://www.am730.com.hk/%E7%A7%91%E6%8A%80/%E8%8F%AF%E7%A2%A9asus-rog-flow-z13%E7%99%BC%E5%B8%83-%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%BC%B7%E9%81%8A%E6%88%B2%E5%B9%B3%E6%9D%BF%E9%9B%BB%E8%85%A6%E7%99%BB%E5%A0%B4-/535509', 'image': 'https://cdn.am730.com.hk/s3fs-public/styles/banner_webp/public/2025-02/4ff74bc5a8dbf8f4dfde.webp?h=53838127&itok=jdZyFEqo×tamp=1740459130', 'publishedAt': '2025-02-25T04:00:00Z', 'source': {'name': 'AM730', 'url': 'https://www.am730.com.hk'}}, {'title': '《魔物獵人 荒野》全球媒體解禁均分90：對新手友善 怕核心獵人玩不過癮', 'description': '《魔物獵人 荒野》即將在本周 2 月 28 日發售，上市前全球媒體評測在稍早正式解禁，Metacritic 網站媒體平均分數為 90（PS5 版本），較前作《魔物獵人 崛起》稍高，並與《魔物獵人 世界', 'content': '圖／CAPCOM\\n《魔物獵人 荒野》即將在本周 2 月 28 日發售，上市前全球媒體評測在稍早正式解禁，Metacritic 網站媒體平均分數為 90（PS5 版本），較前作《魔物獵人 崛起》稍高，並與《魔物獵人 世界》同分。\\n根據 Metacritic 綜合 74 間媒體的評價 ，大多給予遊戲正面好評，尤其是在遊戲的劇情、視覺、戰鬥流暢度表現更上一層樓，讓獵人能夠沉浸在其中。\\nGameSpew 給出 100 分高分，認為《魔物獵人 荒野》「引入了許多有趣的新機制和特色，進一步提升了原本十分出色... [571 chars]', 'url': 'https://game.udn.com/game/story/122089/8569654', 'image': 'https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2025/02/25/0/31554510.png&x=&y=&sw=&sh=&sl=W&fw=800&exp=3600', 'publishedAt': '2025-02-25T03:35:23Z', 'source': {'name': 'udn 遊戲角落', 'url': 'https://game.udn.com'}}, {'title': '小薯茄阿冰妹妹吳泳傳出軌新婚人夫 大婆公開疑似捉姦片畫面曝光：小三裸體繼續瞓', 'description': '小薯茄吳冰（阿冰）的細妹吳泳今日（25日）傳出介入網紅健身教練婚姻，疑為網紅健身教練的新婚妻在網上嬲爆發文，標籤阿冰爆料，疑似其妹出軌人夫。據指，網紅健身教練結婚時，小薯茄的成員曾去觀禮，又有一齊拍片，估計雙方關係不錯。 吳泳疑被爆色慾短訊 人妻「FaFa Tse」的老公William有指是一位網紅健身教練，二人去年11月結婚，「FaFa」的IG有不少婚紗靚相。「FaFa」昨日在網上分享開心與朋友', 'content': '小薯茄吳冰（阿冰）的細妹吳泳今日（25日）傳出介入網紅健身教練婚姻，疑為網紅健身教練的新婚妻在網上嬲爆發文，標籤阿冰爆料，疑似其妹出軌人夫。據指，網紅健身教練結婚時，小薯茄的成員曾去觀禮，又有一齊拍片，估計雙方關係不錯。\\n吳泳疑被爆色慾短訊\\n人妻「FaFa Tse」的老公William有指是一位網紅健身教練，二人去年11月結婚，「FaFa」的IG有不少婚紗靚相。「FaFa」昨日在網上分享開心與朋友聚會，突然變成疑似「捉姦」，「FaFa」今日在IG限時動態出PO，凌晨時分闖入辦公室，更爆出疑似老公... [1117 chars]', 'url': 'https://www.stheadline.com/realtime-entertainment/3432121/%E5%B0%8F%E8%96%AF%E8%8C%84%E9%98%BF%E5%86%B0%E5%A6%B9%E5%A6%B9%E5%90%B3%E6%B3%B3%E5%82%B3%E5%87%BA%E8%BB%8C%E6%96%B0%E5%A9%9A%E4%BA%BA%E5%A4%AB-%E5%A4%A7%E5%A9%86%E5%85%AC%E9%96%8B%E7%96%91%E4%BC%BC%E6%8D%89%E5%A7%A6%E7%89%87%E7%95%AB%E9%9D%A2%E6%9B%9D%E5%85%89%E5%B0%8F%E4%B8%89%E8%A3%B8%E9%AB%94%E7%B9%BC%E7%BA%8C%E7%9E%93', 'image': 'https://image.hkhl.hk/f/1200p0/0x0/100/none/58dff6af86c5a4431544670b3c971237/2025-02/KF_NEW.jpg', 'publishedAt': '2025-02-25T03:29:00Z', 'source': {'name': '星島頭條', 'url': 'https://www.stheadline.com'}}, {'title': 'NASA新望遠鏡即將升空 耗時2年要繪製3D宇宙新地圖', 'description': '美國太空總署最新的太空望遠鏡「SPHEREx」，全名為「宇宙歷史、再電離時期和冰探測器光譜-光度計」，預計將於2月28日搭乘SpaceX獵鷹9號火箭，從加州范登堡太空軍基地升空。這項耗資4.88億美元（約新台幣160億）的任務，將以肉眼不可見的紅外線波長，繪製宇宙3D地圖，有助於了解宇宙起源。', 'content': '編譯／李寓心\\n美國太空總署（NASA）最新的太空望遠鏡「SPHEREx」，全名為「宇宙歷史、再電離時期和冰探測器光譜-光度計」（Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer），預計將於2月28日搭乘SpaceX獵鷹9號火箭（Falcon 9），從加州范登堡太空軍基地升空。這項耗資4.88億美元（約新台幣160億）的任務，將以肉眼不可見的紅外線波長，繪製宇宙3D... [766 chars]', 'url': 'https://www.technice.com.tw/technology/space/165897/', 'image': 'https://www.technice.com.tw/wp-content/uploads/2025/02/space_telescope_-SPHEREx_NASA-3.jpg', 'publishedAt': '2025-02-25T03:25:58Z', 'source': {'name': '科技島', 'url': 'https://www.technice.com.tw'}}]}\n"
+     ]
+    }
+   ],
+   "source": [
+    "#https://gnews.io/api/v4/top-headlines?country=hk&category=general&apikey=API_KEY\n",
+    "import requests\n",
+    "\n",
+    "url = \"https://gnews.io/api/v4/top-headlines?country=hk&category=general&apikey=241af5c234c39e440673b659eece63c5\"\n",
+    "\n",
+    "response = requests.get(url)\n",
+    "print(response.json())\n",
+    "res_json = response.json()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'content': '華碩ASUS ROG Flow Z13發佈 史上最強遊戲平板電腦登場？\\n'\n",
+      "            '不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo '\n",
+      "            'Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 '\n",
+      "            'CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為「史上最強遊戲平板電腦」。\\n'\n",
+      "            'GPU 效能接近獨立顯示卡但功耗更低 ASUS ROG Flow Z13 搭載了... [956 chars]',\n",
+      " 'description': '不少人都喜歡在外遊戲，例如是手提遊戲機或 Nintendo '\n",
+      "                'Switch，便是為這些玩家而設的遊戲機，而作為手提遊戲機的另一方案，遊戲平板電腦擁有更強效能，但卻比電競手提電腦更輕便易攜，還能兼顧日常輕量工作需要。而曾在 '\n",
+      "                'CES 2025 亮相的華碩 ASUS ROG Flow Z13 遊戲平板電腦，更被 ASUS 稱為',\n",
+      " 'image': 'https://cdn.am730.com.hk/s3fs-public/styles/banner_webp/public/2025-02/4ff74bc5a8dbf8f4dfde.webp?h=c6d4b9be&itok=jdZyFEqo×tamp=1740456928',\n",
+      " 'publishedAt': '2025-02-25T04:00:00Z',\n",
+      " 'source': {'name': 'AM730', 'url': 'https://www.am730.com.hk'},\n",
+      " 'title': '華碩ASUS ROG Flow Z13發佈 史上最強遊戲平板電腦登場？',\n",
+      " 'url': 'https://www.am730.com.hk/%E7%A7%91%E6%8A%80/%E8%8F%AF%E7%A2%A9asus-rog-flow-z13%E7%99%BC%E4%BD%88-%E5%8F%B2%E4%B8%8A%E6%9C%80%E5%BC%B7%E9%81%8A%E6%88%B2%E5%B9%B3%E6%9D%BF%E9%9B%BB%E8%85%A6%E7%99%BB%E5%A0%B4-/535509'}\n"
+     ]
+    }
+   ],
+   "source": [
+    "from pprint import pprint\n",
+    "\n",
+    "pprint(res_json['articles'][5])\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# categories = \n",
+    "# World\n",
+    "# Nation\n",
+    "# Business\n",
+    "# Technology\n",
+    "# Entertainment\n",
+    "# Sports\n",
+    "# Science\n",
+    "# Health\n",
+    "\n",
+    "categories = [\"world\", \"nation\", \"business\", \"technology\", \"entertainment\", \"sports\", \"science\", \"health\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'totalArticles': 20468, 'articles': [{'title': '神蹟或詐欺？她稱意大利聖母像「流血淚」受調查 DNA鑑定揭真相', 'description': '天主教大國意大利羅馬附近一個城鎮的一尊聖母瑪利亞雕像2016年遭傳流下血淚，被視為神蹟，吸引數百人前往朝聖。女子Gisella Cardia不但傳出聖母瑪', 'content': '天主教大國意大利羅馬附近一個城鎮的一尊聖母瑪利亞雕像2016年遭傳流下血淚，被視為神蹟，吸引數百人前往朝聖。女子Gisella Cardia不但傳出聖母瑪利亞流血淚的消息，更自詡聖母代言人。此舉引來大批信徒朝聖，其中許多人向卡迪亞建立的基金會捐款。她目前因欺詐指控而接受調查。\\n事發於2016年，Gisella Cardia在巴爾幹半島國家波斯尼亞和黑塞哥維（Bosnia and Herzegovina）的天主教朝聖地Medjugorje購買一座聖母瑪利亞雕像後，把雕像運送到羅馬附近的小鎮Trev... [376 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212476/%E7%A5%9E%E8%B9%9F%E6%88%96%E8%A9%90%E6%AC%BA-%E5%A5%B9%E7%A8%B1%E6%84%8F%E5%A4%A7%E5%88%A9%E8%81%96%E6%AF%8D%E5%83%8F-%E6%B5%81%E8%A1%80%E6%B7%9A-%E5%8F%97%E8%AA%BF%E6%9F%A5-dna%E9%91%91%E5%AE%9A%E6%8F%AD%E7%9C%9F%E7%9B%B8', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250220/969260559914504192861253.jpeg/bFvvi5RVQzr4ekcUKlOiAZnxu3jgXfHGiWA__olgP_4?v=w1280r16_9', 'publishedAt': '2025-02-20T08:00:58Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '特朗普自稱國王 白宮貼戴王冠圖吹捧 紐約州長：美國是法治國家', 'description': '在美國政府2月19日表示將終止紐約市交通擁堵收費計劃後，特朗普因推動取消堵車費成功而在社交平台Truth Social上發文自稱「國王」，白宮之後還在社', 'content': '在美國政府2月19日表示將終止紐約市交通擁堵收費計劃後，特朗普因推動取消堵車費成功而在社交平台Truth Social上發文自稱「國王」，白宮之後還在社交網站上傳一張特朗普戴上王冠、寫上「國王萬歲」字眼的封面圖。紐約州長霍楚爾（Kathy Hochul）批評稱「我們是法治國家，不是國王統治。」\\n美國交通部長達菲（Sean Duffy）稱，此舉將終止一項計劃，這項計劃「讓駕駛者無法選擇任何免費的高速公路，反而要從勞動人民身上花更多錢來支付運輸系統，而非高速公路」。\\n特朗普在Truth Social... [474 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212358/%E7%89%B9%E6%9C%97%E6%99%AE%E8%87%AA%E7%A8%B1%E5%9C%8B%E7%8E%8B-%E7%99%BD%E5%AE%AE%E8%B2%BC%E6%88%B4%E7%8E%8B%E5%86%A0%E5%9C%96%E5%90%B9%E6%8D%A7-%E7%B4%90%E7%B4%84%E5%B7%9E%E9%95%B7-%E7%BE%8E%E5%9C%8B%E6%98%AF%E6%B3%95%E6%B2%BB%E5%9C%8B%E5%AE%B6', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250220/969260090043404288415726.jpeg/bA8fEqzsaAWv0cZlJCUt_N3mtOI7_ArU9lcVkfZXFZE?v=w1280r16_9', 'publishedAt': '2025-02-20T04:28:36Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '澤連斯基的絕望寫在臉上', 'description': '面對俄羅斯和美國兩大強權，面對已成定局的停戰安排，在特朗普步步威逼之下，憤懣、絕望有什麼用呢？', 'content': '離2月24日俄烏開戰三周年不足一周，俄羅斯和美國代表團2月18日就烏克蘭問題在利雅得舉行會談。烏克蘭總統澤連斯基（Volodymyr Zelensky）同日對美俄官員在沙特舉行的會談表示不滿，稱此次會談事關烏克蘭戰爭問題，卻未邀請烏克蘭參與，歐洲也被一腳踢在門外。\\n面對被美國無情拋棄，澤連斯基還在做最後無用的掙扎，宣稱「談判不應該在我們背後進行」，烏克蘭絕不妥協、絕不屈服，不會接受俄羅斯和美國做出的任何停戰決議。他還聲稱特朗普（Donald Trump）很不幸地「活在虛假訊息裏」（lives i... [677 chars]', 'url': 'https://www.hk01.com/%E5%9C%8B%E9%9A%9B%E5%88%86%E6%9E%90/60212328/%E6%BE%A4%E9%80%A3%E6%96%AF%E5%9F%BA%E7%9A%84%E7%B5%95%E6%9C%9B%E5%AF%AB%E5%9C%A8%E8%87%89%E4%B8%8A', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250215/967389506707656704587960.jpeg/yqCGlbbHfQnKgwRwr06YlWjiZg66RvPL1wIe1dcCHtU?v=w1280r16_9', 'publishedAt': '2025-02-20T02:46:28Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '01連線｜內地客呻滯留南極 港客：天氣多變早預咗，唔明點解投訴', 'description': '近期，內媒報道「數百名遊客受困南極，有團體滯留2天多花20萬」，消息引述內地遊客說法稱，2月5日乘坐「銀海奮進號」和「麥哲倫探索號」郵輪的所有', 'content': '近期，內媒報道「數百名遊客受困南極，有團體滯留2天多花20萬」，消息引述內地遊客說法稱，2月5日乘坐「銀海奮進號」和「麥哲倫探索號」郵輪的所有遊客都因為南極天氣惡劣，抵達南極後無法搭乘返回智利的航班，被迫滯留，影響後續行程。\\n《香港01》記者訪問2月11日到17日到南極旅遊的港人Bianca，她解釋南極旅遊充滿不確定性，這是在報名南極團的Day One就知道的，「所有行程都要根據當天的天氣狀況而定，出發前就已經預咗，人哋都係想保障你生命安全才延遲，完全不明白（為何投訴），因為真係一早講明， 我唔... [1787 chars]', 'url': 'https://www.hk01.com/%E5%A4%A7%E5%9C%8B%E5%B0%8F%E4%BA%8B/60212190/01%E9%80%A3%E7%B7%9A-%E5%85%A7%E5%9C%B0%E5%AE%A2%E5%91%BB%E6%BB%AF%E7%95%99%E5%8D%97%E6%A5%B5-%E6%B8%AF%E5%AE%A2-%E5%A4%A9%E6%B0%A3%E5%A4%9A%E8%AE%8A%E6%97%A9%E9%A0%90%E5%92%97-%E5%94%94%E6%98%8E%E9%BB%9E%E8%A7%A3%E6%8A%95%E8%A8%B4', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250220/969220573097889792403156.jpeg/5uqLxTDan7n9H4FRDq-Ygl9quVkjsF2wbWppgm1qaYI', 'publishedAt': '2025-02-20T01:30:36Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '夫妻遇流浪小汪攔車 停下有驚人發現 最終領走7隻混合毛球大軍', 'description': '根據《The Dodo》報導，美國肯塔基州（Kentucky）一對夫婦，日前騎車時發現被3隻可愛的小毛球沿路追車，想停下來關心卻瞬間跑出更多幼崽攔車，如今', 'content': '根據《The Dodo》報導，美國肯塔基州（Kentucky）一對夫婦，日前騎車時發現被3隻可愛的小毛球沿路追車，想停下來關心卻瞬間跑出更多幼崽攔車，如今他們也公開這群毛孩的近況。\\n娜達莉雅（Natalea Bowling）在臉書表示，2025年的第一次騎車出遊就讓他印象相當深刻。►毛孩子有IG了，來追蹤我們吧！\\nNatalea看到3隻小狗狗追車後停下來，沒想到後面又衝出4隻小奶汪。（facebook@Natalea Bowling）\\n+ 5\\n當時夫妻倆正騎著四輪摩托車，在家裡附近閒晃的時候，發... [432 chars]', 'url': 'https://www.hk01.com/%E5%AF%B5%E7%89%A9/60210505/%E5%A4%AB%E5%A6%BB%E9%81%87%E6%B5%81%E6%B5%AA%E5%B0%8F%E6%B1%AA%E6%94%94%E8%BB%8A-%E5%81%9C%E4%B8%8B%E6%9C%89%E9%A9%9A%E4%BA%BA%E7%99%BC%E7%8F%BE-%E6%9C%80%E7%B5%82%E9%A0%98%E8%B5%B07%E9%9A%BB%E6%B7%B7%E5%90%88%E6%AF%9B%E7%90%83%E5%A4%A7%E8%BB%8D', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250218/968506683368148992425096.jpeg/0x8KIZSrsaMsYwFzEvrYdX_RWlrDPHMYHO8krBzvJKw', 'publishedAt': '2025-02-20T00:00:51Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '特朗普續向媒體宣戰 駐外使領館被要求退訂《紐時》等6間機構', 'description': '由美國《政治報》（Politico，也譯作「政客」）「收受美國際開發署資助」而起的美國聯邦政府「退訂潮」，正波及越來越多媒體和部門。美國《華盛頓', 'content': '由美國《政治報》（Politico，也譯作「政客」）「收受美國際開發署資助」而起的美國聯邦政府「退訂潮」，正波及越來越多媒體和部門。美國《華盛頓郵報》2月18日披露，美國務院已要求駐外使領館取消所有「非關鍵」的媒體訂閱，並點名了包括《政治報》在內的6家美國和國際媒體為優先取消對象。\\n報道稱，其看到的一份美國務院11日通過郵件發給各美國駐歐洲使領館的備忘錄指，考慮到削減聯邦政府開支這一「優先事項」，「請各機構立即對所有非學術或專業期刊的媒體訂閱（出版物、期刊和報紙）的非任務關鍵型合同/採購訂單下達... [2510 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212303/%E7%89%B9%E6%9C%97%E6%99%AE%E7%BA%8C%E5%90%91%E5%AA%92%E9%AB%94%E5%AE%A3%E6%88%B0-%E9%A7%90%E5%A4%96%E4%BD%BF%E9%A0%98%E9%A4%A8%E8%A2%AB%E8%A6%81%E6%B1%82%E9%80%80%E8%A8%82-%E7%B4%90%E6%99%82-%E7%AD%896%E9%96%93%E6%A9%9F%E6%A7%8B', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250219/968762613456441344498630.jpeg/36eD6BJFSQ0fEuk22AgdBDLaGA844uSlfL3Lrny9y64?v=w1280r16_9', 'publishedAt': '2025-02-19T23:55:02Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': 'DOGE亂炒人？ 美國能源部「誤裁」350名核武計劃員工 翌日復職', 'description': '美國總統特朗普（Donald Trump，又譯川普）在其盟友全球首富馬斯克（Elon Musk）的主導下，不斷為聯邦政府進行「瘦身裁員計劃」。美國媒體近日報道', 'content': '美國總統特朗普（Donald Trump，又譯川普）在其盟友全球首富馬斯克（Elon Musk）的主導下，不斷為聯邦政府進行「瘦身裁員計劃」。美國媒體近日報道，由馬斯克領導的政府效率部（Department of Government Efficiency）上周突然開除數百名負責核武計劃的能源部僱員，其後部門主管又倉促讓他們復職，這一個政策大反轉讓外界憂慮特朗普政府治下美國的核安全。\\n美聯社2月17日引述3名匿名美國官員報道，國家核安全管理局（National Nuclear Security ... [990 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212295/doge%E4%BA%82%E7%82%92%E4%BA%BA-%E7%BE%8E%E5%9C%8B%E8%83%BD%E6%BA%90%E9%83%A8-%E8%AA%A4%E8%A3%81-350%E5%90%8D%E6%A0%B8%E6%AD%A6%E8%A8%88%E5%8A%83%E5%93%A1%E5%B7%A5-%E7%BF%8C%E6%97%A5%E5%BE%A9%E8%81%B7', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250220/969113927487066112851749.jpeg/0Wnt2qfHhkf2RVJ_2hdtrQr4eOwDwanKkeeLZpHni2Y?v=w1280r16_9', 'publishedAt': '2025-02-19T21:24:40Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}, {'title': '邊個同你講「雷」？', 'description': '兜兜轉轉，終於走到美俄泯恩仇的一天，普京是否最大贏家有待觀察，不過，美俄關係因為特朗普的MAGA可以連成一線，兩國可以各取其所。一則消息在美俄沙地會晤之際高調地爆出，可堪玩味。《俄羅斯衛星通訊社》今日', 'content': '兜兜轉轉，終於走到美俄泯恩仇的一天，普京是否最大贏家有待觀察，不過，美俄關係因為特朗普的MAGA可以連成一線，兩國可以各取其所。\\n美俄在沙特會晤。AP圖片\\n一則消息在美俄沙地會晤之際高調地爆出，可堪玩味。《俄羅斯衛星通訊社》今日中文網頭條意外地不是美俄會晤，而是報導俄羅斯軍工複合體動向︰「俄國防出口公司總裁亞歷山大·米赫耶夫表示，俄國防工業綜合體達到了既能保障國防部利益，還能同時實施和簽訂新的武器和軍事裝備出口合同的生產規模。」\\n米赫耶夫正參加2月17至21日舉行的2025阿布扎比國際防務展（I... [1045 chars]', 'url': 'https://www.bastillepost.com/hongkong/article/14718712-%E9%82%8A%E5%80%8B%E5%90%8C%E4%BD%A0%E8%AC%9B%E3%80%8C%E9%9B%B7%E3%80%8D%EF%BC%9F', 'image': 'https://image.bastillepost.com/640x/wp-content/uploads/hongkong/2025/02/deep-bule-300x190-9.jpg', 'publishedAt': '2025-02-19T12:08:57Z', 'source': {'name': '巴士的報', 'url': 'https://www.bastillepost.com'}}, {'title': '何太福氣不減露水桶巨腩！現身內地街市被網民捕獲 何伯一狀態惹網民憐憫', 'description': '年近80歲的何伯與自稱比老公細30年的何太一段忘年戀及父女金錢糾紛成為熱話，去年更獲選為Google搜尋十大話題人物之一。何太形象飄忽，一時扮嬌妻一時扮惡妻，對何伯態度兩極，她曾怒轟何伯「你七街瞓」更成為經典。沉寂一時的何伯夫婦，近日被網民在內地街市捕獲，兩人依然恩愛，何太福氣不減，挺巨腩孭A貨Gucci手袋，親民與女網民合照。 何伯何太現身內地街市 有女網民今日（19日）在小紅書以「菜市場偶遇何', 'content': '年近80歲的何伯與自稱比老公細30年的何太一段忘年戀及父女金錢糾紛成為熱話，去年更獲選為Google搜尋十大話題人物之一。何太形象飄忽，一時扮嬌妻一時扮惡妻，對何伯態度兩極，她曾怒轟何伯「你七街瞓」更成為經典。沉寂一時的何伯夫婦，近日被網民在內地街市捕獲，兩人依然恩愛，何太福氣不減，挺巨腩孭A貨Gucci手袋，親民與女網民合照。\\n何伯何太現身內地街市\\n有女網民今日（19日）在小紅書以「菜市場偶遇何伯何太」為題發帖，並hashtag標註#何伯何太 #你七街瞓。照片可見，何氏夫婦黑白雙煞造型示人，頭... [543 chars]', 'url': 'https://www.stheadline.com/realtime-entertainment/3430419/%E4%BD%95%E5%A4%AA%E7%A6%8F%E6%B0%A3%E4%B8%8D%E6%B8%9B%E9%9C%B2%E6%B0%B4%E6%A1%B6%E5%B7%A8%E8%85%A9%E7%8F%BE%E8%BA%AB%E5%85%A7%E5%9C%B0%E8%A1%97%E5%B8%82%E8%A2%AB%E7%B6%B2%E6%B0%91%E6%8D%95%E7%8D%B2-%E4%BD%95%E4%BC%AF%E4%B8%80%E7%8B%80%E6%85%8B%E6%83%B9%E7%B6%B2%E6%B0%91%E6%86%90%E6%86%AB', 'image': 'https://image.hkhl.hk/f/1200p0/0x0/100/none/ce20218dc0671b17c5b87d7f9b83524f/2025-02/ent___9.png', 'publishedAt': '2025-02-19T12:00:10Z', 'source': {'name': '星島頭條', 'url': 'https://www.stheadline.com'}}, {'title': '晤美特使前 澤連斯基指特朗普活在假訊息空間 強調不為協議賣國', 'description': '美國特朗普政府的俄烏問題特使凱洛格（Keith Kellogg）2月19日抵達烏克蘭首都基輔，將與烏克蘭總統澤連斯基（Volodymyr Zelenskiy）會面。在此前夕', 'content': '美國特朗普政府的俄烏問題特使凱洛格（Keith Kellogg）2月19日抵達烏克蘭首都基輔，將與烏克蘭總統澤連斯基（Volodymyr Zelenskiy）會面。在此前夕，澤連斯基表示，非常尊重美國總統特朗普（Donald Trump），但不幸對方「活在假訊息空間中」（lives in disinformation space）。\\n澤連斯基向傳媒指「不幸地，特朗普總統，我非常尊重他，他是一個我們非常尊重的國家的領導人，美國人一直支持我們——但不幸的是，他活在這個假訊息的空間中。」\\n他指，有關他... [380 chars]', 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212229/%E6%99%A4%E7%BE%8E%E7%89%B9%E4%BD%BF%E5%89%8D-%E6%BE%A4%E9%80%A3%E6%96%AF%E5%9F%BA%E6%8C%87%E7%89%B9%E6%9C%97%E6%99%AE%E6%B4%BB%E5%9C%A8%E5%81%87%E8%A8%8A%E6%81%AF%E7%A9%BA%E9%96%93-%E5%BC%B7%E8%AA%BF%E4%B8%8D%E7%82%BA%E5%8D%94%E8%AD%B0%E8%B3%A3%E5%9C%8B', 'image': 'https://cdn.hk01.com/di/media/images/dw/20250219/968960191921917952416052.jpeg/zYNgxLIWVtBUDyQhCBecDB50edd-zIxYjkjAg45IwIM?v=w1280r16_9', 'publishedAt': '2025-02-19T11:09:01Z', 'source': {'name': '香港01', 'url': 'https://www.hk01.com'}}]}\n"
+     ]
+    }
+   ],
+   "source": [
+    "category = categories[0]\n",
+    "url = f\"https://gnews.io/api/v4/top-headlines?country=hk&category={category}&apikey=241af5c234c39e440673b659eece63c5\"\n",
+    "\n",
+    "response = requests.get(url)\n",
+    "print(response.json())\n",
+    "res_json = response.json()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'content': '天主教大國意大利羅馬附近一個城鎮的一尊聖母瑪利亞雕像2016年遭傳流下血淚，被視為神蹟，吸引數百人前往朝聖。女子Gisella '\n",
+      "            'Cardia不但傳出聖母瑪利亞流血淚的消息，更自詡聖母代言人。此舉引來大批信徒朝聖，其中許多人向卡迪亞建立的基金會捐款。她目前因欺詐指控而接受調查。\\n'\n",
+      "            '事發於2016年，Gisella Cardia在巴爾幹半島國家波斯尼亞和黑塞哥維（Bosnia and '\n",
+      "            'Herzegovina）的天主教朝聖地Medjugorje購買一座聖母瑪利亞雕像後，把雕像運送到羅馬附近的小鎮Trev... '\n",
+      "            '[376 chars]',\n",
+      " 'description': '天主教大國意大利羅馬附近一個城鎮的一尊聖母瑪利亞雕像2016年遭傳流下血淚，被視為神蹟，吸引數百人前往朝聖。女子Gisella '\n",
+      "                'Cardia不但傳出聖母瑪',\n",
+      " 'image': 'https://cdn.hk01.com/di/media/images/dw/20250220/969260559914504192861253.jpeg/bFvvi5RVQzr4ekcUKlOiAZnxu3jgXfHGiWA__olgP_4?v=w1280r16_9',\n",
+      " 'publishedAt': '2025-02-20T08:00:58Z',\n",
+      " 'source': {'name': '香港01', 'url': 'https://www.hk01.com'},\n",
+      " 'title': '神蹟或詐欺？她稱意大利聖母像「流血淚」受調查 DNA鑑定揭真相',\n",
+      " 'url': 'https://www.hk01.com/%E5%8D%B3%E6%99%82%E5%9C%8B%E9%9A%9B/60212476/%E7%A5%9E%E8%B9%9F%E6%88%96%E8%A9%90%E6%AC%BA-%E5%A5%B9%E7%A8%B1%E6%84%8F%E5%A4%A7%E5%88%A9%E8%81%96%E6%AF%8D%E5%83%8F-%E6%B5%81%E8%A1%80%E6%B7%9A-%E5%8F%97%E8%AA%BF%E6%9F%A5-dna%E9%91%91%E5%AE%9A%E6%8F%AD%E7%9C%9F%E7%9B%B8'}\n"
+     ]
+    }
+   ],
+   "source": [
+    "pprint(res_json['articles'][0])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from typing import TypedDict\n",
+    "\n",
+    "class AgentRunningState(TypedDict):\n",
+    "    pre_execute: dict\n",
+    "    on_execute: dict\n",
+    "    @classmethod\n",
+    "    def get_sample_agent_param(cls):\n",
+    "        return \"he\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ins_state = AgentRunningState({\"a\":1,\"b\":2})"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'he'"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "AgentRunningState.get_sample_agent_param()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "5*4*2*2"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "csagent",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
+
 
