@@ -1,0 +1,50 @@
+{"topic": "Tourism", "instances": ["香港啲tourist spots真係多色多彩，每次出街都發現到啲新嘢。例如話嗰次我去過Ocean Park，睇完巨型八爪魚心都好震撼。"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["我尋日去完長城，真係amazing experience！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上次我去Disneyland，好多新rides，好好玩啊！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["嗰日我去咗香港太平山頂，view真係amazing，靚到不得了！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["我記得上次去旅行果陣個時間超開心，我見到好多美麗嘅landmarks，係咪值得再去一次呢？"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["我記得上年去Japan,嗰啲temples真係好靚！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上次去完日本之後，我好想再去一次大阪影晒啲屋企人係Universal Studios嘅相， 仲未完夠晒郵，好想再坐次過嗰個Harry Potter ride！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["剛剛去完香港，真係好正！Victoria Harbour嘅夜景靚到爆，影相唔使加filter！希望下次可以住喺The Peninsula，要儲下零用錢先！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上次去日本真係玩得超開心，我哋去睇咗好多寺廟，又食咗好多好味道嘅sushi！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["我嗰次去旅遊見識咗好多，我仲記得行遍曬Barcelona嘅小巷，嗰啲tapas真係超正！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["Remember嗰次我哋去過香港？", "講起旅行，我好掛住次次一齊去Tokyo食Ramen!", "今年有冇去過Paris呀？西鐵鐵塔真係好靚喎！", "上次旅行，係Egypt個pyramids好神奇！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["你行過旅遊點未？", "有，我啱啱先去完Liberty Statue，超靚！", "真係？上次我只去嗰個museum，有啲悶！", "下次你去 theme park la，一定唔悶！", "無錯，我都有plan住去嗰度！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["嘩，上次去Paris真係開心！", "係呀！Tower of Eiffel好靚，我影咗好多相呀。", "你有冇買啲souvenirs呀？", "有呀，我買咗啲磁鐵比老豆老母，佢哋好鍾意！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你記唔記得，我哋上個星期去Hong Kong Disneyland嘅時候幾開心？", "係呀，仲記得嗰陣玩勁多rides！", "我最鍾意嗰個太空飛船ride，真係刺激！", "我都覺得嗰個最好玩，仲有all the Mickey Mouse characters係唔係好funny？", "笑死我啦，尤其係Donald Duck，佢啲expression真係正！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上星期去咗Paris，簡直amazing！", "好好喇，我成日想去Paris。你去睇咗Eiffel Tower未呀？", "Have to lah, 影咗好多相。", "有冇食到法國嘅巴黎鐵塔雪糕？", "食咗呀！好特別，好彩我朋友介紹咗俾我聽。", "Next time 一齊去，試埋法國餐。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上個月我同family去travel, 去咗Tokyo睇sakura, 真係好靚喎！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["之前去travel嗰陣，本來唔知有咁多地方好玩喎！", "係咪？我上次去Thailand，發現咗好多unique嘅culture同food！", "真係？Thailand有乜地方一定要去？", "Bangkok好多temple，一定要睇！同埋試下street food，特別香！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上次我去explore香江最exciting嘅attractions，真係太好玩喇！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上個weekend我去咗Hong Kong Disneyland，真係好開心無得頂！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["前個holiday我去咗Thailand, 佢啲street food真係好正！"], "conversation_type": "single-turn"}
+{"type": "object", "properties": {"topic": {"type": "string"}, "instances": {"type": "array", "items": {"type": "string"}}, "conversation_type": {"type": "string"}}}
+{"topic": "Tourism", "instances": ["上個weekend我同朋友去咗Disneyland。", "Wa, 係咪好好玩啊？", "係呀！我哋搭好多野，仲影咗好多相。", "啲rides好唔好玩？我聽話Space Mountain好正！", "係超好玩，我哋嗌成晚！但啲queues真係long到冇眼睇。", "咁就要先pre-book tickets，咁就可以快啲入去玩啦！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": "上次去旅行真係好！We visited the famous 步行街 in that city. 景色 stunning, 攝影靚景真係冇得輸。", "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["聽日去完science博物館之後，專程去Mong Kok食夜宵！", "真係呀，好耐冇去Mong Kok，嗰度熱鬧到不得了！", "啱啱開咗新hiking trail，有冇興趣去睇？", "呢個聽落幾正，仲可以影晒啲靚相upload返上Instagram喎！", "仲有紅磡有個展可參觀博物館後去邊？", "嗰度有好多local小食等你試喇！", "得啦，我哋搭完train之後，直接去Kowloon Walled City Park影影相先啦！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上次我去Italy玩, 超正㗎! 我影咗好多相, 仲有食咗好多好味pasta。"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上次我去過Big Buddha，真係好大個，景色好靚！", "去完迪士尼，我買咗好多souvenirs，大家都好鍾意！", "行完Star Ferry之後，成個view真係不得了，highly recommend！", "我上星期去咗Ocean Park，睇到好多奇妙animal，超好玩！", "我記得去馬灣時試過佢哋嗰啲seafood，真係好好味！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["你知唔知我上次去東京見咗咩？", "哇，邊道旅行？東京好好玩喔！", "唔係咁平，但係去睇咗Tokyo Tower, 仲食咗好多delicious sushi!", "你好勁，有冇買咩手信返黎？", "買咗Doraemon唔使講啦！好想帶埋你去睇井之頭公園哋秋天景色！", "我當然有興趣！下次一齊去，唔該你做tour guide！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["嗰次去Paris嘅experience真係好amazing，我最like去嗰間喺Eiffel Tower附近嘅restaurant。"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["你上次去旅行去咗邊？", "我上次去咗Italy喎，好靚啊！", "咁多地方點揀嘅？", "其實我最想睇Colosseum，所以就揀咗Italy。你呢？", "我冇去過歐洲，只係去過日本同台灣啫。", "去過日本？哇，咪一定要試嗰啲sushi啦！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上個禮拜去完Kyoto, 覺得嗰度嘅temples真係好amazing, 下次一定要book多幾日去explore more."], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["早晨，我啱啱返嚟加拿大旅行，風景好靚，上次有試到empire building嘅餐廳，真係好值得一去!"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["你知唔知去year-end trip去咩地方好？", "有冇興趣去Japan？ 上次去真係超chill 㗎。", "我想試下雪上活動，聽聞好好玩喎。", "上次去Tokyo,我哋試咗好多local美食，值得推薦！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你之前去Tokyo旅行係點啊？", "哇，Tokyo真係好好玩！嗰啲食物真係amazing呀，每餐我都食到好飽！", "係咪去咗嗰啲famous sight-seeing spots？", "有呀，Shibuya嗰邊真係好多人，之前喺Shibuya Crossing影咗好多相！", "你喺邊個travel guide上搵到啲地方去㗎？", "我係online forum睇到好多建議，啲人recommend咗好多must-visit spots。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你上次去日本旅行感覺如何？", "超好玩！我去咗好多地方，見識咗多元化的culture。", "聽說你有visit啲唔尋常景點？", "係呀，我去咗個sushi-making class，想學吓如何做traditional sushi。", "咁好喇！我下次跟你去，想試吓嗰啲道地food。", "冇問題，我哋仲可以去泡溫泉，享受埋relaxation。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上次去Paris真係太amazing了，我去咗Louvre Museum同埋睇咗Eiffel Tower。依家好想再去！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["A：嗰陣去Paris真係amazing，個Eiffel Tower晚上亮燈嗰下，萬字閃！", "B：我都去過，嗰啲小巷魚生啱晒我，cafes坐坐輕鬆寫意！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["去過Hong Kong Disneyland，果然係好正！", "之前去Seoul旅行，辣嘅食物好好味， but太辣啦！", "我好鍾意去日本個温泉，真係好relax！", "去過兩次Bangkok，食到啲街邊小食真係cheap又good！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["上星期喺長洲玩得好開心，嗰個beach真係靚到嘔！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["你之前有冇去過Kyoto？", "有呀，上年去過。好靚嘅地方，寺廟真係好壯觀！", "你最鍾意邊個景點？", "我最鍾意喺Fushimi Inari Shrine攞咗好多相，嗰度嘅torii gates紅色鮮紅。", "哇，聽落好吸引㖞！我都想去嗰度。", "啱啱google, flights好平！應該考慮下trip！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["喂，你上次話去旅行去邊度嘅？", "哦，我去咗Paris。係真係amazing place喇！", "係呀？有乜好睇？", "我去咗睇Eiffel Tower，同埋行咗Louvre Museum，簡直mind-blowing！", "讲到我都心痒，最想去邊個attraction呢！", "你如果去到一定唔可以miss埋The Seine那河cruise喇！", "唔錯嘅建议，下次真係要去。你有冇買少少souvenirs返嚟？", "我就买咗本地produce嘅cheese和wine，朋友都好锺意。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你記唔記得我哋喺Paris嗰次點好？", "當然記得啦！嗰個view真係不得了！", "仲有我哋嗰日去tour Eiffel Tower，幾靚呀！", "係呀！嗰啲法式baguette真係好食！", "仲有冇咩地方你想再去？", "有呀，其實我想去Rome explore多啲歷史文化。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你上次去旅行嘅destination係邊度？", "啊，我去過Thailand，嗰度啲景點真係mad靚！", "咁好呀，我都仲未去過。不過呢個關乎時間與budget。", "係囉，我記得book早少少就可以搵到cheap flights。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["之前我同屋企人出咗Travel啦，兩個星期時間已經Exploring晒好多地方！", "咁犀利喔！去邊度Travel？", "頭先去咗Disneyland，Chill緊到唔想返Hometown。", "Disneyland好有Fun呀！係Disney+嚟睇新Movie呢！", "係啊，我哋係返學之前都Plan緊去其他地方呀。", "一定要，趁而家仲有時間去Explore多啲唔同Culture。", "你有Suggest去Disneyland之後，趁Holiday仲可以Join啲乜Program？", "我覺得可以去Universal Studios，體驗唔同Theme Park都好正！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上次去完Japan返嚟，我真係好開心。", "真係？你最中意邊一part？", "富士山chok到冇朋友呀，景色超靚！", "啱啱！仲有大阪啲食物都唔錯哦。", "係喇，仲試咗好多唔同flavor既mochi。", "要數一數我哋仲有幾多年先可以再去...", "但係video call都ok有feel既。", "講真，出trip之前我整咗個行程list，唔要support都無問題啊。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你上次去日本返嚟未？", "返咗，仲玩得好開心！嘩嗰次嗰Mount Fuji係靚到不得了！", "聽講你去咗好多temples！點樣？有冇試埋local snacks？", "有呀，我食咗好多mochi，仲食咗sushi，超正！", "之前係日本的時候，點樣溝通？有冇見到好多tourists？", "好多，不過我都系有帶翻事先download好的translator，幫咗唔少。", "我咁話，因為我下年都打算去！", "我都想去多次，你計劃好咗未？睇咗d travel tips未？"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你上星期去咗嫖越南，你覺得越南有乜特別？", "哇！越南真係好靚，特別係河內嘅喃市，啲街好有vibe。", "我識啲人話越南嘅street food好正，你試咗未？", "試咗！做咗好多bun cha同pho，食完好滿足。", "喔，呢啲都係必食清單。你拍咗相無？", "梗！影咗唔少風景，仲有幾張搭船影到嘅panty流行。", "好想睇！快啲show俾我睇你影嘅相。", "冇問題！改日約，慢慢share同你講旅遊經驗。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["早兩排我去咗Paris仲有去咗eiffel tower，真係好夢幻！", "我好想去架，可惜琴日先返到香港，无得放假啦。", "唔緊要，聽講年底有holiday package，咁啱birthday去！", "哇，咁即係同一日去louvre museum嗰啲地方？", "係呀，仲想試晒啲法國菜，pilking就喺timetable上面啦。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你上次去Japan嗰陣有冇去過Shibuya呀？", "有啊，我仲影咗好多相喺Shibuya Crossing添！", "嘩，羨慕死我！我好想去睇睇！", "你下次去，可以同我一齊啦，好好玩！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["嗨，我最近去咗日本，食咗好多好好食嘅sushi。", "喺日本有冇試和服？好多地方有得rent吖嘛。", "試咗啊，真係幾靚，喺京都仲影咗好多相！", "我都好想去旅行，但疫情影響下未能成行。希望快啲可以去到！"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["去日本嗰次，我哋去曬好多地方, especially嗰個神社真係美到不得了！"], "conversation_type": "single-turn"}

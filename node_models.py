@@ -10,5 +10,10 @@ class AgentRunningState(TypedDict):
     education_level: str
     first_language: str
     second_language: str
+    conversation_type: str
     response: str
         
+class Response(TypedDict):
+    topic: str
+    instances: list[str]
+    conversation_type: str

@@ -30,11 +30,12 @@ def generate_scenarios(config: dict) -> list[AgentRunningState]:
     ages = config["character_setting"]["age"]
     edu_levels = config["character_setting"]["education_level"]
     cs_ratios = config["cs_ratio"]
+    conversation_types = config["conversation_type"]
 
     # Use itertools.product to combine them
     all_scenarios = []
-    for (topic, tense, perspective, gender, age, edu_level, cs_ratio) in itertools.product(
-        topics, tenses, perspectives, genders, ages, edu_levels, cs_ratios
+    for (topic, tense, perspective, gender, age, edu_level, cs_ratio, conversation_type) in itertools.product(
+        topics, tenses, perspectives, genders, ages, edu_levels, cs_ratios, conversation_types
     ):
         scenario = {
             "topic": topic,
@@ -46,6 +47,7 @@ def generate_scenarios(config: dict) -> list[AgentRunningState]:
             # If needed, you can also include the other single-value config fields:
             "cs_ratio": cs_ratio,
             "use_tools": config["use_tools"],
+            "conversation_type": conversation_type,
             # ...
             "first_language": config["character_setting"]["nationality"]["first_language"],
             "second_language": config["character_setting"]["nationality"]["second_language"],

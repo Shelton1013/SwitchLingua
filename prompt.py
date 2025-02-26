@@ -25,7 +25,7 @@ You must:
 {{
  "topic": "Weather",
 "instances": "今日個天咁藍,應該係個perfect day去hiking!"
-"type": "single-turn"
+"conversation_type": "single-turn"
 }}
 \n
 **Example Output Structure** (for a multi-turn example in Cantonese-English Mixed Language):
@@ -37,7 +37,7 @@ You must:
       "咁好喇！我miss咗直播。",
       "唔緊要，可以睇replay，一齊睇過？"
     ],
-    "type": "multi-turn"
+    "conversation_type": "multi-turn"
 }}
 \n
 **Language Requirements**
@@ -54,6 +54,7 @@ You must:
 \n
 **Topic**
 - Topic: {topic}
+- Conversation Type: {conversation_type}
 """.strip(),
         )
     ]

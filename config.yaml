@@ -36,7 +36,7 @@ pre_execute:
       - "College"
       - "Master"
       - "Doctor"
-  output_type:
+  conversation_type:
     - "single_turn"
     - "multi-turn"
   output_format:
