@@ -24,10 +24,15 @@ class CodeSwitchingAgent:
         return workflow.compile()
 
     async def run(self):
-
         async def run_scenario(scenario):
             logger.info(f"🤖 Running scenario: {scenario}")
-            return await self.workflow.ainvoke(scenario)
+            try:
+                return await asyncio.wait_for(
+                    self.workflow.ainvoke(scenario), timeout=10
+                )
+            except asyncio.TimeoutError:
+                logger.warning(f"⏱️ Scenario timed out after 10 seconds: {scenario}")
+                return ""
 
         tasks = [run_scenario(scenario) for scenario in self.scenarios[:50]]
         results = await asyncio.gather(*tasks)
