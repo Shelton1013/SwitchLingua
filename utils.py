@@ -31,11 +31,13 @@ def generate_scenarios(config: dict) -> list[AgentRunningState]:
     edu_levels = config["character_setting"]["education_level"]
     cs_ratios = config["cs_ratio"]
     conversation_types = config["conversation_type"]
+    cs_functions = config["cs_function"]
+    cs_types = config["cs_type"]
 
     # Use itertools.product to combine them
     all_scenarios = []
-    for (topic, tense, perspective, gender, age, edu_level, cs_ratio, conversation_type) in itertools.product(
-        topics, tenses, perspectives, genders, ages, edu_levels, cs_ratios, conversation_types
+    for (topic, tense, perspective, gender, age, edu_level, cs_ratio, conversation_type, cs_function, cs_type) in itertools.product(
+        topics, tenses, perspectives, genders, ages, edu_levels, cs_ratios, conversation_types, cs_functions, cs_types
     ):
         scenario = {
             "topic": topic,
@@ -44,17 +46,22 @@ def generate_scenarios(config: dict) -> list[AgentRunningState]:
             "gender": gender,
             "age": age,
             "education_level": edu_level,
-            # If needed, you can also include the other single-value config fields:
             "cs_ratio": cs_ratio,
             "use_tools": config["use_tools"],
             "conversation_type": conversation_type,
-            # ...
             "first_language": config["character_setting"]["nationality"]["first_language"],
             "second_language": config["character_setting"]["nationality"]["second_language"],
+            "cs_function": cs_function,
+            "cs_type": cs_type,
         }
         all_scenarios.append(scenario)
 
     return all_scenarios
+
+
+def get_news_article(topic: str) -> str:
+    # TODO: Implement this
+    return ""
 
 if __name__ == "__main__":
     # Here is your config dictionary (simplified for the example):
@@ -68,13 +75,16 @@ if __name__ == "__main__":
                 'second_language': 'English'
             }
         },
-        'cs_ratio': 0.5,
+        'cs_function': ['Directive','Expressive','Referential','Phatic','Metalinguistic','Poetic'],
+        'cs_type': ['Intersentential','Intrasentential','Extra-sentential / Tag switching'],
+        'cs_ratio': ["Low","Medium","High"],
         'output_format': 'json',
         'output_type': 'single_turn',
         'perspective': ['First Person','Third Person'],
         'tense': ['Past','Present','Future'],
         'topics': ['Tourism','Weather','Shopping','Food','Exam','Politics'],
-        'use_tools': True
+        'use_tools': True,
+        'conversation_type': ['single_turn','multi-turn']
     }
 
     scenarios = generate_scenarios(config)

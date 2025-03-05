@@ -48,3 +48,52 @@
 {"topic": "Tourism", "instances": ["你上次去Japan嗰陣有冇去過Shibuya呀？", "有啊，我仲影咗好多相喺Shibuya Crossing添！", "嘩，羨慕死我！我好想去睇睇！", "你下次去，可以同我一齊啦，好好玩！"], "conversation_type": "multi-turn"}
 {"topic": "Tourism", "instances": ["嗨，我最近去咗日本，食咗好多好好食嘅sushi。", "喺日本有冇試和服？好多地方有得rent吖嘛。", "試咗啊，真係幾靚，喺京都仲影咗好多相！", "我都好想去旅行，但疫情影響下未能成行。希望快啲可以去到！"], "conversation_type": "multi-turn"}
 {"topic": "Tourism", "instances": ["去日本嗰次，我哋去曬好多地方, especially嗰個神社真係美到不得了！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["聽日我哋去香港迪士尼land, everybody話好好玩喎！"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["今日佢哋個shopping mall有九折discount，我覺得買衫係好deal。"], "conversation_type": "single_turn"}
+{"topic": "Food", "instances": ["今晚經過嗰間cafe，我就走咗去買coffee啦，真係好香呀！"], "conversation_type": "single-turn"}
+{"topic": "Food", "instances": "我今晚想試下煮spaghetti alfredo, 你有無suggest好食譜？", "conversation_type": "single-turn"}
+{"topic": "Food", "instances": ["今晚諗住試下新開嗰間restaurant，聽講佢中西fusion cuisine好特別。"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["尋晚我唔記得買份gift，但後日呢去mall可以順便睇睇！"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["下个月放暑假，我準備去旅行！", "快啲定plan喇，你諗住去邊度？", "我諗住去Japan又或Thailand，都未決定。", "咁你喜歡日本的文化好多，是不是？", "係呀，有好多anime and manga I want to check out!", "咁記得買啲souvenirs返嚟俾我啦！"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["喂，你考完試未？", "啱啱考完，我覺得幾ok喎。", "呢個exam好難，尤其係嗰個數學題目。", "isn’t it always like that? 我都覺得嗰題難搞。", "你有冇去過study group 啵？ 我覺得helpful唔少。", "有啊，無study group我真係死硬。"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["佢下個星期有個好緊張嘅exam要考呢！", "係呀，聽講佢仲話practice個difficulty essay 最大o嘅part。", "都好好彩掛，he has access to好多good resources。", "但係佢仲係好緊張，好想做得best possible。", "唔使擔心，佢用嘅study technique 全部都好effective！"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["明天我有exam，你願唔願意講下book擺喺咩位先？", "哦，exam，我完全忘記左！你溫咗書未？", "我溫咗啲，但有啲concern仲未摸清楚。", "唔緊要，考試前借短時間睇一睇reminder notes就好啦。", "係呀，多謝！等我快手溫返多啲，考試之後一齊去飲茶。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["上次去Travel,我係meiji jingu 好enjoy嗰個scenery!", "Wow, me too! 嗰度好靚, 仲有好多嘢睇，我最鍾意嗰個peaceful environment.", "嗰次有冇喺there食緊係佢地嘅傳統嘢食？", "有呀，有好多野食，尤其係嗰個ramen，十個十分", "Nice! 下次唔通要揾多啲friend一齊去！"], "conversation_type": "multi-turn"}
+{"topic": "Food", "instances": ["嗰次佢去festival，試咗好多唔同嘅snacks。", "佢話個context caramel popcorn都係超好味，完全停唔到口！", "佢最鐘意嗰間curry fish balls，好spicy但好正。", "之後佢仲買咗個giant candy apple，佢食咗唔知幾耐先食完。"], "conversation_type": "multi-turn"}
+{"topic": "Food", "instances": ["呢間café個環境真係好relaxing，而且佢哋嘅scones好好食！而且佢哋嘅特調latte好creamy！"], "conversation_type": "single-turn"}
+{"topic": "Exam", "instances": ["你知唔知, 我依家仲記得我讀書時參加嗰個exam.", "係喇，那時讀master's真係唔容易, 成日要travel去唔同嘅universities上堂。", "係咁,仲有呢個project,嗰陣我好stress,考完試即刻買咗啲ice cream食先放鬆吓嘛。", "仲記得考完試嗰陣,我同啲好友一起去旅行呀, 點都要celebrate吓。好好嘅memories!"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你有冇去過日本旅行？上次我去睇紅葉，啲風景真係so beautiful!", "係咩？我都想去，但而家疫情，搞唔掂flight tickets。", "係啊，之前啲票價貴到啲驚人。我計劃明年可能會去once everything settles down。", "係喇，我老婆上次話想book Japan嘅溫泉酒店，so relaxing。", "Oh, absolutely. 溫泉真係一流，尤其係秋冬季，浸住望住雪景。未試過一定要試㗎！"], "conversation_type": "multi-turn"}
+{"topic": "Weather", "instances": ["阿李: 數碼港聽講明日會有雷暴。", "先生: 係呀！David 話佢會帶遮，但懷疑有可能要延期活動。", "阿李: 或者睇下我哋有無alternative plan？", "先生: 如果真係打風，不如stay indoor嚟聽歌講求其。", "阿李: Good idea, my friend! 一齊煲下檔案片仲好，但準備啲tea喎！"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["呢次exam唔係太難，但我覺得難啲係timing control，不過我管理得唔錯。"], "conversation_type": "single-turn"}
+{"topic": "Weather", "instances": ["Tomorrow I think個天都會好靚, perfect for a picnic!"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["嗰間超市最近有啲貨都好快out of stock,佢哋啲優惠好吸引。"], "conversation_type": "single-turn"}
+{"topic": "Exam", "instances": "呢個exam幾challenging，如果仲係學生真係要日日review notes先得！", "conversation_type": "single-turn"}
+{"topic": "Weather", "instances": ["下星期喺Hong Kong應該會有台風，所以我計劃stay indoors。希望唔會exactly hit我哋呢區。"], "conversation_type": "single-turn"}
+{"topic": "Tourism", "instances": ["下星期我同朋友準備去旅行，可能會去explore Hong Kong's hidden gems。", "真係好期待！我諗你會enjoy啲local culture。", "其實我上一個trip見識過好多，但仲未試過行全個Kowloon Walled City Park。", "聽咗你咁講，可能我都要去explore吓！你話幾時去呀？", "我諗約埋一齊next week嘅weekend。到時去食吓啲local food添！"], "conversation_type": "multi-turn"}
+{"topic": "Weather", "instances": ["今天天氣好唔好呀？媽媽問。", "唔錯，天好藍，陽光普照，小姐回應，今次應該會揾日子去海灘攝下影。", "哦！Have you checked the forecast for rain later this afternoon?", "睇過啦，冇特別雨預報，只係啲風係會強勁啲咁。", "That's good to know. 我會叫爸爸開窗，不過要記得鎖好啲屋安全。", "你話得啱，睇來我哋真係 need to plan a beach day soon!"], "conversation_type": "multi-turn"}
+{"topic": "Shopping", "instances": ["今朝去shopping mall嗰陣，佢見到個beautiful handbag，雖然out of budget，但幾時見到咁靚，手都禁唔?買。"], "conversation_type": "single-turn"}
+{"topic": "Food", "instances": ["佢呢排成日都練煮新嘢食，tomorrow想試做一個Japanese curry。", "係呀，佢話要用才用quality ingredients，希望味道啱晒口味。", "應該好好味喎，我咋期待佢咩時候can invite we biye一齊share experience。"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["佢話今次exam真係好challenging，完全估唔到出題方向。", "係呀，我就由第一條開始係覺得有啲serious problem，咁多新concept要記。", "點解佢唔講清楚範圍係邊呢？明明話open-book㗎嘛。", "我諗佢係想test我哋critical thinking。", "即使咁，我原本諗住passing grade可以，但而家有啲擔心喇。", "唔使擔心，考完試唔好諗咁多，final marks會好嘅。"], "conversation_type": "multi-turn"}
+{"topic": "Politics", "instances": ["你今晚有冇睇news？", "有，嗰個debate point好interesting，講嗰particular policy呀。", "我覺得呢啲政策係話畀未來有影響, 不過唔係全部人會agree。", "係呀，大選前呢啲話題好trending喎，你會唔會投票呀？", "當然會啦，呢次係我第一次vote, 好緊張。"], "conversation_type": "multi-turn"}
+{"topic": "Food", "instances": ["今晚有冇興趣試下嗰間new restaurant？", "哦，係個average score好高嗰間 Italian place嗎？", "係，聽講佢哋嘅pasta好正，你好鍾意意大利菜嘛！", "係呀，我早已想試佢哋個carbonara。", "咁就最好啦，去試過！因為我聽講chef is Italian native，so唔會有錯！"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["呢份exam真係唔係易做，加埋今年嘅課程複雜度，我都估唔到佢會出咩題目。"], "conversation_type": "single-turn"}
+{"topic": "Exam", "instances": ["呢個禮拜六我有個biology test, 我仲有好多notes未看!"], "conversation_type": "single-turn"}
+{"topic": "Food", "instances": ["有冇試過嗰間新開嘅咖啡店？佢哋啲蛋糕好出名喎！", "有呀，嗰個lemon tart好正，仲有好多唔同味道嘅sandwich。", "我上次試咗佢哋嘅panini，睇落好simple，但入口好juicy。", "噢，我就係鍾意留返星期日下午茶時間慢慢試下佢哋啲新嘢。"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["上次我exam唔係好掂，因為我臨尾先開始讀書，我下一次一定要早啲準備。"], "conversation_type": "single-turn"}
+{"topic": "Exam", "instances": ["喂，你覺得下星期的math exam會難嘛？", "聽老師講，this time會有好多application problems。", "係咩？那我要extra practice了！", "是啊，let's make sure we review all the key concepts."], "conversation_type": "multi-turn"}
+{"topic": "Weather", "instances": ["聽講天文台話，週末會有Sunny day，咁就正話去beach.", "佢話下星期會好多雨，不如cancel hike や?"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["嗱，Matthew話今個weekend出嚟去shopping喇！佢話有d好嘢要比我地睇，可能係啲新款鞋！"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["呢個weekend我想去shopping，你有冇興趣一齊去呀？", "有呀！最近有冇咩好deal可以share？", "呀，我聽講City Centre有售後喎，尤其係electronics。", "好呀，我都想check out嗰啲新出的smartphones！", "係呀，可能有時出色新model啦。嘩，真好期待tim!"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["佢上次去旅行嗰陣，就覺得thailand 好靚！", "佢講嗰時喺bangkok買咗好多souvenirs！", "佢話floating markets嗰度啲嘢食多到食唔曬。", "佢仲話最鐘意去wat arun嗰度影多相。"], "conversation_type": "multi-turn"}
+{"topic": "Exam", "instances": ["嗰本教材針嘅真係唔夠我瞓覺，我今晚都係熬夜讀書啦。"], "conversation_type": "single-turn"}
+{"topic": "Politics", "instances": ["啲政策最近反覆無常,我哋真係唔知會唔會有improvement啊。", "你覺得今次嘅election會唔會bring change呀？希望有新leader take charge啦！", "最近嘅新聞,我睇完真係好concern我哋嘅future,尤其係經濟政策。", "睇完debate,我覺得佢講嘅plan係有potential,但implementation仲係課題。", "你覺得最多人關心嘅議題係乜嘢？我覺得immigration係一個big topic。"], "conversation_type": "single-turn"}
+{"topic": "Politics", "instances": ["今次大選你有冇諗住去投票呀？", "有啊，但係campaign好混亂，我都唔知支持邊個好。", "今次呢屆個政府有啲唔勁，所以我會支持嗰個 new candidate。", "其實我都聽人講，佢啲政綱幾吸引㗎喎！冇計啦，為咗我哋下一代嘅未來，我哋一定要做出改變。"], "conversation_type": "multi-turn"}
+{"topic": "Politics", "instances": ["最近香港呢啲政策變化影響好大，唔知你點睇？"], "conversation_type": "single-turn"}
+{"topic": "Politics", "instances": ["最近呢，媒體對政府既政策評論冇咁中立喇。", "係呀！有時真係唔知信邊啲news好。", "之前睇news，條policy影響好多小店，仲係唔合理。", "真係，希望government可以再推行更好的measures。", "都唔知點，dissolve呢個policy會唔會有效。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["下次去Paris嘅時候，他一定要影多啲相，capture more than just the Eiffel Tower!"], "conversation_type": "single_turn"}
+{"topic": "Shopping", "instances": ["今次出街買嘢，發現好多新品嘢，順便買咗啲写真唔係咪好好？"], "conversation_type": "single-turn"}
+{"topic": "Shopping", "instances": ["尋日我去咗mall，睇中咗件好靚ge top。", "你有冇買呀？", "本身唔想買，但見佢打緊五折，so why not！", "Wow, you made a great deal! 可能仲有其他discount？", "我都有留意，但呢件衫已經係last size，冇得挑吖。", "Good thing you bought it. 你多唔多時去shopping？", "唔算多，但有需要就會go shopping。", "我最近都shopping多咗，尤其是online，方便嘛！", "哈哈，係喇，有時實體shopping都悶。但睇啲新gear 好開心。"], "conversation_type": "multi-turn"}
+{"topic": "Tourism", "instances": ["你下個月有無plan去玩？", "有啊，我預備去日本，朋友話櫻花季节好靚㗎！", "真係咁？我一直想去睇櫻花，但未搵到人夠膽一齊去。", "跟我一齊去吧！我booking咗酒店，同時會去大阪shopping！", "嘩，咁好好！去完返黎要同大家share個旅遊經驗喔！"], "conversation_type": "multi-turn"}
+{"topic": "Politics", "instances": ["今次election超緊張, 唔知邊個會be the next leader?"], "conversation_type": "single-turn"}
+{"topic": "Exam", "instances": ["最近忙住study，啲exam應該唔會有問題。你呢？", "我都好慘呀。啲chapter多到read唔晒。", "試下用啲study technique, 可能effective啲。", "It's a good idea，可能下次吻都考得好啲。"], "conversation_type": "multi-turn"}
+{"topic": "Food", "instances": ["嗰日去咗新開嗰間korean restaurant，D kimchi pancakes真係好好味呀！", "記得上次你介紹我試嗰間sushi place，果然出奇嘅新鮮，好enjoy！", "尋日瞓唔著，喺廚房煮咗個蛋包飯，結果竟然show off到屋企人！", "又係anniversary，佢帶我去咗一個rooftop dining，一齊試咗好多新嘢，幸福滿滿~", "上次喺小眼鏡，食咗個超juicy嘅lobster，未試過咁誇張！"], "conversation_type": "single-turn"}
