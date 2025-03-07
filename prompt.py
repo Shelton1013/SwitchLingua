@@ -224,7 +224,7 @@ FLUENCY_PROMPT = ChatPromptTemplate.from_messages(
                 - `constraint_violated` (e.g., mention “Free Morpheme Constraint,” “Equivalence Constraint,” or a known grammar rule)
             - A short `summary` of overall fluency.
             given the code-switched text {data_generation_result}.
-            """
+            """,
         )
     ]
 )
@@ -250,7 +250,7 @@ NATURALNESS_PROMPT = ChatPromptTemplate.from_messages(
             - A list of `observations` about unnatural or awkward phrases, if any.
             - A `summary` describing how natural the code-switching is overall.           
             given the code-switched text {data_generation_result}.
-            """
+            """,
         )
     ]
 )
@@ -271,9 +271,9 @@ CS_RATIO_PROMPT = ChatPromptTemplate.from_messages(
             - A `computed_ratio` or breakdown: e.g., "66% : 34%".
             - A `notes` field listing any ratio-related observations.
 
-            
+            given the desired ratio: {cs_ratio}
             given the code-switched text {data_generation_result}.
-            """
+            """,
         )
     ]
 )
@@ -296,8 +296,34 @@ SOCIAL_CULTURAL_PROMPT = ChatPromptTemplate.from_messages(
                 - `description`
             - A short `summary` with your overall assessment.
             given the code-switched text {data_generation_result}.
-            """
+            """,
         )
     ]
 )
 
+REFINER_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "assistant",
+            """
+            You are **RefinerAgent**. Your task is to refine the code-switched text based on the comments from the FluencyAgent, NaturalnessAgent, CSRatioAgent, and SocioCulturalAgent:
+
+            1. **Fluency**:
+            - Check for grammatical errors or unnatural mixing of word orders between the matrix and embedded languages.
+            
+            2. **Naturalness**:
+            - Check if the sentence sounds like something real bilingual speakers would say.
+
+            3. **CS Ratio**:
+            - Check the proportion of matrix language vs. embedded language.
+
+            4. **SocioCultural**:
+            - Check if the code-switched text respects cultural norms and uses correct borrowed words or expressions.
+
+            Here are the comments : {summary}
+
+            Please refine the code-switched text based on the comments.
+            """
+        )
+    ]
+)

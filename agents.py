@@ -12,11 +12,20 @@ from node_engine import (
     RunNaturalnessAgent,
     RunCSRatioAgent,
     RunSocialCulturalAgent,
+    RunRefinerAgent,
+    AcceptanceAgent,
 )
 from node_models import AgentRunningState
 import random
 
 logger.add("logs/code_switching_agent.log")
+
+
+def meet_criteria(state: AgentRunningState):
+    if state["score"] < 8:
+        return "Refiner"
+    else:
+        return "AcceptanceAgent"
 
 
 class CodeSwitchingAgent:
@@ -50,6 +59,8 @@ class CodeSwitchingAgent:
         workflow.add_node("CSRatioAgent", RunCSRatioAgent)
         workflow.add_node("SocialCulturalAgent", RunSocialCulturalAgent)
         workflow.add_node("SummarizeResult", SummarizeResult)
+        workflow.add_node("RefinerAgent", RunRefinerAgent)
+        workflow.add_node("AcceptanceAgent", AcceptanceAgent)
         # workflow.add_node("NewsGenerationAgent", RunUseToolsAgent)
         workflow.add_edge(START, "DataGenerationAgent")
         # workflow.add_edge(START, "NewsGenerationAgent")
@@ -57,17 +68,23 @@ class CodeSwitchingAgent:
         workflow.add_edge("DataGenerationAgent", "NaturalnessAgent")
         workflow.add_edge("DataGenerationAgent", "CSRatioAgent")
         workflow.add_edge("DataGenerationAgent", "SocialCulturalAgent")
-        workflow.add_edge(["FluencyAgent", "NaturalnessAgent", "CSRatioAgent", "SocialCulturalAgent"], "SummarizeResult")
-        workflow.add_edge("SummarizeResult", END)
+        workflow.add_edge(
+            ["FluencyAgent", "NaturalnessAgent", "CSRatioAgent", "SocialCulturalAgent"],
+            "SummarizeResult",
+        )
+        workflow.add_conditional_edges("SummarizeResult", meet_criteria)
+        workflow.add_edge("RefinerAgent", "SummarizeResult")
+        workflow.add_edge("AcceptanceAgent", END)
+        graph = workflow.compile()
         # workflow.add_edge("NewsGenerationAgent", END)
-        return workflow.compile()
+        return graph
 
     async def run(self):
         async def run_scenario(scenario):
             logger.info(f"🤖 Running scenario: {scenario}")
             try:
                 return await asyncio.wait_for(
-                    self.workflow_with_data_generation.ainvoke(scenario), timeout=10
+                    self.workflow_with_data_generation.ainvoke(scenario), timeout=500
                 )
             except asyncio.TimeoutError:
                 logger.warning(f"⏱️ Scenario timed out after 10 seconds: {scenario}")
@@ -75,7 +92,7 @@ class CodeSwitchingAgent:
 
         # randomly select 50 scenarios
         random.shuffle(self.scenarios)
-        tasks = [run_scenario(scenario) for scenario in self.scenarios[:1]]
+        tasks = [run_scenario(scenario) for scenario in self.scenarios[:100]]
         results = await asyncio.gather(*tasks)
         return results
 

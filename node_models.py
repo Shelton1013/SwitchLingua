@@ -53,3 +53,4 @@ class AgentRunningState(TypedDict):
     social_cultural_result: SocialCulturalResponse
 
     summary: str
+    score: float

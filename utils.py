@@ -63,6 +63,13 @@ def get_news_article(topic: str) -> str:
     # TODO: Implement this
     return ""
 
+def weighting_scheme(state):
+    fluency = state["fluency_result"]['fluency_score']
+    naturalness = state["naturalness_result"]['naturalness_score'] 
+    csratio = state['cs_ratio_result']['ratio_score']
+    socio = state["social_cultural_result"]['socio_cultural_score']
+    return fluency * 0.3 + naturalness * 0.25 + csratio * 0.2 + socio * 0.25
+
 if __name__ == "__main__":
     # Here is your config dictionary (simplified for the example):
     config = {

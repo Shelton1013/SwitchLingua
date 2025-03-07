@@ -11,6 +11,7 @@ from prompt import (
     NATURALNESS_PROMPT,
     CS_RATIO_PROMPT,
     SOCIAL_CULTURAL_PROMPT,
+    REFINER_PROMPT,
 )
 from node_models import (
     AgentRunningState,
@@ -20,6 +21,7 @@ from node_models import (
     CSRatioResponse,
     SocialCulturalResponse,
 )
+from utils import weighting_scheme
 from pprint import pprint
 from copy import deepcopy
 
@@ -78,13 +80,13 @@ def RunDataGenerationAgent(state: AgentRunningState):
         model="gpt-4o", temperature=0.7, base_url="https://apivip.aiproxy.io/v1"
     ).with_structured_output(GenerationResponse)
     response = DataGenerationAgent.invoke(state)
-    payload = deepcopy(state)
-    try:
-        payload["instances"] = response["instances"]
-        with jsonlines.open("result/data_generation_result_new.jsonl", "a") as f:
-            f.write(payload)
-    except Exception as e:
-        print(response)
+    # payload = deepcopy(state)
+    # try:
+    #     payload["instances"] = response["instances"]
+    #     with jsonlines.open("result/data_generation_result_new.jsonl", "a") as f:
+    #         f.write(payload)
+    # except Exception as e:
+    #     print(response)
     return {"data_generation_result": response["instances"]}
 
 
@@ -93,6 +95,7 @@ def RunFluencyAgent(state: AgentRunningState):
         model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
     ).with_structured_output(FluencyResponse)
     response = FluencyAgent.invoke(state)
+    print(response)
     return {"fluency_result": response}
 
 
@@ -101,6 +104,7 @@ def RunNaturalnessAgent(state: AgentRunningState):
         model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
     ).with_structured_output(NaturalnessResponse)
     response = NaturalnessAgent.invoke(state)
+    print(response)
     return {"naturalness_result": response}
 
 def RunCSRatioAgent(state: AgentRunningState):
@@ -127,14 +131,30 @@ def SummarizeResult(state: AgentRunningState):
     CSRatio Result: {state["cs_ratio_result"]}
     Social Cultural Result: {state["social_cultural_result"]}
     """
-    
-    print(summary)
-    return {"summary": summary}
+    state["summary"] = summary
+    # print(summary)
+    # with jsonlines.open("result/summary_result_new.jsonl", "a") as f:
+    #     f.write(state)
 
+    return {"score": weighting_scheme(state), "summary": summary}
+
+def AcceptanceAgent(state: AgentRunningState):
+    with jsonlines.open("result/acceptance_result_new.jsonl", "a") as f:
+        f.write(state)
+    return 
+
+def RunRefinerAgent(state: AgentRunningState):
+    RefinerAgent = REFINER_PROMPT | ChatOpenAI(
+        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+    ).with_structured_output(GenerationResponse)
+    response = RefinerAgent.invoke(state)
+    print(response)
+    return {"refiner_result": response}
+    
 if __name__ == "__main__":
     FluencyAgent = FLUENCY_PROMPT | ChatOpenAI(
         model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
     ).with_structured_output(FluencyResponse)
-    response = FluencyAgent.invoke({"instances":["今天天氣真係好靚，I think she will enjoy a walk in the park later."]})
+    response = FluencyAgent.invoke(state)
     print(response)
-    pass
+    
