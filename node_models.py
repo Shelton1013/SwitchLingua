@@ -1,5 +1,5 @@
-from typing import TypedDict, Optional
-
+from typing import TypedDict, Optional, Annotated
+from operator import add
 
 class GenerationResponse(TypedDict):
     instances: list[str]
@@ -54,3 +54,5 @@ class AgentRunningState(TypedDict):
 
     summary: str
     score: float
+
+    refine_count: Annotated[int, add]

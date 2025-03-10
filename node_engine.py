@@ -32,11 +32,11 @@ dotenv.load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("AIPROXY_API_KEY")
 
 # SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="gpt-4o", temperature=1)
-
+MODEL = "gpt-4o-mini"
 
 def RunSampleAgent(state: AgentRunningState):
     SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(GenerationResponse)
     response = SampleAgent.invoke(state)
     if response.get("type"):
@@ -52,7 +52,7 @@ def RunSampleAgent(state: AgentRunningState):
 
 def RunUseToolsAgent(state: AgentRunningState):
     UseToolsAgent = USE_TOOLS_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(GenerationResponse)
     random_news = []
     with jsonlines.open("news/news_data_till241201.jsonl") as f:
@@ -77,9 +77,15 @@ def RunDataGenerationAgent(state: AgentRunningState):
     if not state.get("news_article"):
         state["news_article"] = ""
     DataGenerationAgent = DATA_GENERATION_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.7, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.7, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(GenerationResponse)
     response = DataGenerationAgent.invoke(state)
+    if not response.get("instances"):
+        while retry:= 4 > 0:
+            response = DataGenerationAgent.invoke(state)
+            if response.get("instances"):
+                break
+            retry -= 1
     # payload = deepcopy(state)
     # try:
     #     payload["instances"] = response["instances"]
@@ -92,36 +98,38 @@ def RunDataGenerationAgent(state: AgentRunningState):
 
 def RunFluencyAgent(state: AgentRunningState):
     FluencyAgent = FLUENCY_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(FluencyResponse)
     response = FluencyAgent.invoke(state)
-    print(response)
+
     return {"fluency_result": response}
 
 
 def RunNaturalnessAgent(state: AgentRunningState):
     NaturalnessAgent = NATURALNESS_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(NaturalnessResponse)
     response = NaturalnessAgent.invoke(state)
-    print(response)
+
     return {"naturalness_result": response}
+
 
 def RunCSRatioAgent(state: AgentRunningState):
     CSRatioAgent = CS_RATIO_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(CSRatioResponse)
     response = CSRatioAgent.invoke(state)
-    print(response)
+
     return {"cs_ratio_result": response}
+
 
 def RunSocialCulturalAgent(state: AgentRunningState):
     SocialCulturalAgent = SOCIAL_CULTURAL_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(SocialCulturalResponse)
     response = SocialCulturalAgent.invoke(state)
-    print(response)
     return {"social_cultural_result": response}
+
 
 def SummarizeResult(state: AgentRunningState):
     summary = f"""
@@ -138,23 +146,27 @@ def SummarizeResult(state: AgentRunningState):
 
     return {"score": weighting_scheme(state), "summary": summary}
 
+
 def AcceptanceAgent(state: AgentRunningState):
-    with jsonlines.open("result/acceptance_result_new.jsonl", "a") as f:
+    with jsonlines.open("result/can_eng_mar10th_4o_latest.jsonl", "a") as f:
         f.write(state)
-    return 
+    return
+
 
 def RunRefinerAgent(state: AgentRunningState):
+    
+
     RefinerAgent = REFINER_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(GenerationResponse)
     response = RefinerAgent.invoke(state)
-    print(response)
-    return {"refiner_result": response}
-    
+
+    return {"refiner_result": response, "refine_count": 1}
+
+
 if __name__ == "__main__":
     FluencyAgent = FLUENCY_PROMPT | ChatOpenAI(
-        model="gpt-4o", temperature=0.1, base_url="https://apivip.aiproxy.io/v1"
+        model="gpt-4o", temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(FluencyResponse)
     response = FluencyAgent.invoke(state)
-    print(response)
-    
+

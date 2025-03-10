@@ -17,39 +17,31 @@ from node_engine import (
 )
 from node_models import AgentRunningState
 import random
+from tqdm import tqdm
 
 logger.add("logs/code_switching_agent.log")
 
+MAX_REFINER_ITERATIONS = 1
+
 
 def meet_criteria(state: AgentRunningState):
-    if state["score"] < 8:
-        return "Refiner"
+    if state["score"] < 8 and state["refine_count"] < MAX_REFINER_ITERATIONS:
+        return "RefinerAgent"
     else:
         return "AcceptanceAgent"
 
 
 class CodeSwitchingAgent:
-    def __init__(self):
-        self.config: dict = load_config()
-        self.scenarios: list[AgentRunningState] = generate_scenarios(
-            self.config["pre_execute"]
-        )
-        self.workflow: StateGraph = self._construct_graph()
+    def __init__(self,scenario_k):
+        self.state = AgentRunningState()
+        self.state["refine_count"] = 0
+        for key in scenario_k.keys():
+            self.state[key] = scenario_k[key]
+        self.state["news_article"] = ""
+        #self.workflow: StateGraph = self._construct_graph()
         self.workflow_with_data_generation: StateGraph = (
             self._construct_graph_with_data_generation()
         )
-        # print(self.initial_state)
-
-    def _construct_graph(self) -> StateGraph:
-        workflow = StateGraph(AgentRunningState)
-        workflow.add_node("SampleAgent", RunSampleAgent)
-        workflow.add_node("UseToolsAgent", RunUseToolsAgent)
-        # workflow.set_entry_point("SampleAgent")
-        workflow.add_edge(START, "SampleAgent")
-        workflow.add_edge(START, "UseToolsAgent")
-        workflow.add_edge("SampleAgent", END)
-        workflow.add_edge("UseToolsAgent", END)
-        return workflow.compile()
 
     def _construct_graph_with_data_generation(self) -> StateGraph:
         workflow = StateGraph(AgentRunningState)
@@ -80,23 +72,81 @@ class CodeSwitchingAgent:
         return graph
 
     async def run(self):
-        async def run_scenario(scenario):
-            logger.info(f"🤖 Running scenario: {scenario}")
-            try:
-                return await asyncio.wait_for(
-                    self.workflow_with_data_generation.ainvoke(scenario), timeout=500
-                )
-            except asyncio.TimeoutError:
-                logger.warning(f"⏱️ Scenario timed out after 10 seconds: {scenario}")
-                return ""
+        #logger.info(f"🤖 Running scenario: {self.scenario_k}")
+        try:
+            return await self.workflow_with_data_generation.ainvoke(
+                self.state, {"recursion_limit": 1e10}
+            )
+        except asyncio.TimeoutError:
+            logger.warning(f"⏱️ Scenario timed out after 10 seconds: {self.scenario_k}")
+            return ""
 
-        # randomly select 50 scenarios
-        random.shuffle(self.scenarios)
-        tasks = [run_scenario(scenario) for scenario in self.scenarios[:100]]
-        results = await asyncio.gather(*tasks)
-        return results
+async def arun(scenario_k):
+    agent_instance = CodeSwitchingAgent(scenario_k)
+    await agent_instance.run()
 
+# async def main():
+#     config: dict = load_config()
+#     scenarios: list[AgentRunningState] = generate_scenarios(
+#         config["pre_execute"]
+#     )
+#     #shuffle scenarios
+#     random.shuffle(scenarios)
+#     tasks = [arun(scenario) for scenario in scenarios[:10]]
+#     results = []
+#     # 使用 asyncio.as_completed 來逐個等待任務完成
+#     for task in tqdm(asyncio.as_completed(tasks), total=len(tasks)):
+#         result = await task
+#         results.append(result)
+#     return results
+
+
+    
+# if __name__ == "__main__":
+#     asyncio.run(main())
+#     # config: dict = load_config()
+#     # scenarios: list[AgentRunningState] = generate_scenarios(
+#     #     config["pre_execute"]
+#     # )
+#     # print(len(scenarios))
+
+
+
+import math
+from concurrent.futures import ProcessPoolExecutor
+# 假设 arun(scenario) 是你之前定义的异步函数，用来处理单个 scenario
+async def run_scenarios_group(scenarios):
+    tasks = [arun(scenario) for scenario in scenarios]
+    results = []
+    # 利用 asyncio.as_completed 配合 tqdm 展示进度
+    for task in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="Group Progress"):
+        result = await task
+        results.append(result)
+    return results
+
+def process_group(scenarios):
+    # 每个进程内独立启动一个事件循环来处理该组 scenario
+    return asyncio.run(run_scenarios_group(scenarios))
 
 if __name__ == "__main__":
-    agent = CodeSwitchingAgent()
-    asyncio.run(agent.run())
+    config = load_config()
+    scenarios = generate_scenarios(config["pre_execute"])
+    #shuffle scenarios
+    random.shuffle(scenarios)
+    scenarios = scenarios[:10000]
+    
+    # 设置进程数量，根据机器核数或实际情况调整
+    num_processes = 32
+    group_size = math.ceil(len(scenarios) / num_processes)
+    # 将 scenario 划分为多个组
+    groups = [scenarios[i:i + group_size] for i in range(0, len(scenarios), group_size)]
+    print(len(groups))
+    all_results = []
+    # 使用 ProcessPoolExecutor 启动多个进程
+    with ProcessPoolExecutor(max_workers=num_processes) as executor:
+        futures = [executor.submit(process_group, group) for group in groups]
+        for future in tqdm(futures, desc="Total Progress"):
+            group_results = future.result()
+            all_results.extend(group_results)
+    
+    # all_results 包含了所有 scenario 的结果
