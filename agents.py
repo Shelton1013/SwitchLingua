@@ -116,7 +116,7 @@ async def main():
     # shuffle scenarios
     random.shuffle(scenarios)
     # make a for loop, each loop run 10 scenarios
-    for i in range(0, 3, 40):
+    for i in range(0, len(scenarios), 40):
 
         tasks = [arun(scenario) for scenario in scenarios[i : i + 40]]
         results = []
