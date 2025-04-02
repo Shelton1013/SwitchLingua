@@ -123,7 +123,7 @@ async def main():
         # 使用 asyncio.as_completed 來逐個等待任務完成
         try:
             for task in tqdm(
-                asyncio.as_completed(tasks, timeout=2400), total=len(tasks)
+                asyncio.as_completed(tasks, timeout=7200), total=len(tasks)
             ):
                 result = await task
                 results.append(result)
