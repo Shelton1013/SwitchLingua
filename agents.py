@@ -18,8 +18,10 @@ from node_engine import (
 from node_models import AgentRunningState
 import random
 from tqdm import tqdm
+import jsonlines as jsl
+from datetime import datetime
 
-logger.add("logs/code_switching_agent.log")
+logger.add(f"logs/code_switching_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
 
 MAX_REFINER_ITERATIONS = 1
 
@@ -32,16 +34,37 @@ def meet_criteria(state: AgentRunningState):
 
 
 class CodeSwitchingAgent:
-    def __init__(self,scenario_k):
+    def __init__(self, scenario_k):
         self.state = AgentRunningState()
         self.state["refine_count"] = 0
         for key in scenario_k.keys():
             self.state[key] = scenario_k[key]
         self.state["news_article"] = ""
-        #self.workflow: StateGraph = self._construct_graph()
+        self.state["news_hash"] = set()
+        self.state["news_dict"] = {}
+        self._init_news_db()
+        # self.workflow: StateGraph = self._construct_graph()
         self.workflow_with_data_generation: StateGraph = (
             self._construct_graph_with_data_generation()
         )
+
+    def _init_news_db(self):
+        topics = [
+            "business",
+            "entertainment",
+            "general",
+            "health",
+            "nation",
+            "science",
+            "sports",
+            "technology",
+            "world",
+        ]
+        for topic in topics:
+            self.state["news_dict"][topic] = []
+            with open(f"news/{topic}_HK_NEWS_mar31_LAST300DAYS.json") as f:
+                for line in jsl.Reader(f):
+                    self.state["news_dict"][topic].append(line.get("content"))
 
     def _construct_graph_with_data_generation(self) -> StateGraph:
         workflow = StateGraph(AgentRunningState)
@@ -72,7 +95,7 @@ class CodeSwitchingAgent:
         return graph
 
     async def run(self):
-        #logger.info(f"🤖 Running scenario: {self.scenario_k}")
+        # logger.info(f"🤖 Running scenario: {self.scenario_k}")
         try:
             return await self.workflow_with_data_generation.ainvoke(
                 self.state, {"recursion_limit": 1e10}
@@ -81,72 +104,47 @@ class CodeSwitchingAgent:
             logger.warning(f"⏱️ Scenario timed out after 10 seconds: {self.scenario_k}")
             return ""
 
+
 async def arun(scenario_k):
     agent_instance = CodeSwitchingAgent(scenario_k)
     await agent_instance.run()
 
-# async def main():
-#     config: dict = load_config()
-#     scenarios: list[AgentRunningState] = generate_scenarios(
-#         config["pre_execute"]
-#     )
-#     #shuffle scenarios
-#     random.shuffle(scenarios)
-#     tasks = [arun(scenario) for scenario in scenarios[:10]]
-#     results = []
-#     # 使用 asyncio.as_completed 來逐個等待任務完成
-#     for task in tqdm(asyncio.as_completed(tasks), total=len(tasks)):
-#         result = await task
-#         results.append(result)
-#     return results
 
+async def main():
+    config: dict = load_config("config_augmented.yaml")
+    scenarios: list[AgentRunningState] = generate_scenarios(config["pre_execute"])
+    # shuffle scenarios
+    random.shuffle(scenarios)
+    # make a for loop, each loop run 10 scenarios
+    for i in range(0, 3, 40):
 
-    
-# if __name__ == "__main__":
-#     asyncio.run(main())
-#     # config: dict = load_config()
-#     # scenarios: list[AgentRunningState] = generate_scenarios(
-#     #     config["pre_execute"]
-#     # )
-#     # print(len(scenarios))
-
-
-
-import math
-from concurrent.futures import ProcessPoolExecutor
-# 假设 arun(scenario) 是你之前定义的异步函数，用来处理单个 scenario
-async def run_scenarios_group(scenarios):
-    tasks = [arun(scenario) for scenario in scenarios]
-    results = []
-    # 利用 asyncio.as_completed 配合 tqdm 展示进度
-    for task in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="Group Progress"):
-        result = await task
-        results.append(result)
+        tasks = [arun(scenario) for scenario in scenarios[i : i + 40]]
+        results = []
+        # 使用 asyncio.as_completed 來逐個等待任務完成
+        try:
+            for task in tqdm(
+                asyncio.as_completed(tasks, timeout=2400), total=len(tasks)
+            ):
+                result = await task
+                results.append(result)
+        except asyncio.TimeoutError:
+            logger.warning(f"⏱️ Scenario timed out after 2400 seconds: {i}")
+            results.append(None)
+            continue
     return results
 
-def process_group(scenarios):
-    # 每个进程内独立启动一个事件循环来处理该组 scenario
-    return asyncio.run(run_scenarios_group(scenarios))
 
 if __name__ == "__main__":
-    config = load_config()
-    scenarios = generate_scenarios(config["pre_execute"])
-    #shuffle scenarios
-    random.shuffle(scenarios)
-    scenarios = scenarios[:10000]
-    
-    # 设置进程数量，根据机器核数或实际情况调整
-    num_processes = 32
-    group_size = math.ceil(len(scenarios) / num_processes)
-    # 将 scenario 划分为多个组
-    groups = [scenarios[i:i + group_size] for i in range(0, len(scenarios), group_size)]
-    print(len(groups))
-    all_results = []
-    # 使用 ProcessPoolExecutor 启动多个进程
-    with ProcessPoolExecutor(max_workers=num_processes) as executor:
-        futures = [executor.submit(process_group, group) for group in groups]
-        for future in tqdm(futures, desc="Total Progress"):
-            group_results = future.result()
-            all_results.extend(group_results)
-    
+    while True:
+        try:
+            asyncio.run(main())
+        except Exception as e:
+            logger.error(f"🚨 Error: {e}")
+            continue
+    # config: dict = load_config()
+    # scenarios: list[AgentRunningState] = generate_scenarios(
+    #     config["pre_execute"]
+    # )
+    # print(len(scenarios))
+
     # all_results 包含了所有 scenario 的结果

@@ -1,0 +1,107 @@
+pre_execute:
+  cs_ratio:
+    - "70%"
+    - "50%"
+    - "30%"
+  use_tools: true
+  topics:
+    - "Tourism"
+    - "Weather"
+    - "Shopping"
+    - "Food"
+    - "Exam"
+    - "Politics"
+    - "Transportation"
+    - "Health"
+    - "Homework"
+    - "Workplace"
+    - "Skill Learning"
+    - "Family"
+    - "Friends"
+    - "Dating"
+    - "Fashion"
+    - "Movies"
+    - "Smartphone"
+    - "Social Media"
+    - "Artificial Intelligence"
+    - "Gaming"
+    - "Sports"
+    - "TV Shows"
+    - "Baking"
+    - "Photography"
+    - "Cooking"
+    - "Gardening"
+    - "DIY"
+    - "Wining the Lottery"
+    - "Future Technology"
+    - "Chiristmas"
+    - "Valentine's Day"
+    - "Halloween"
+    - "Easter"
+    - "New Year"
+    - "Birthday"
+    - "Anniversary"
+    - "Chinese New Year"
+    - "Halloween"
+    - "News"
+    - "Environment"
+    - "Economy"
+    - "Technology"
+    - "Science"
+    - "Art"
+    - "Rock Music"
+    - "Pop Music"
+    - "Jazz Music"
+    - "Blues Music"
+    - "Country Music"
+    - "Hip Hop Music"
+    - "Rap Music"
+    
+  tense:
+    - "Past"
+    - "Present"
+    - "Future"
+  perspective:
+    - "First Person"
+    - "Third Person"
+  cs_function:
+    - "Directive"
+    - "Expressive"
+    - "Referential"
+    - "Phatic"
+    - "Metalinguistic"
+    - "Poetic"
+  cs_type:
+    - "Intrasentential"
+    - "Extra-sentential / Tag switching"
+  character_setting:
+    nationality:
+      first_language: "Cantonese"
+      second_language: "English"
+    age:
+      - "8-17"
+      - "18-25"
+      - "26-35"
+      - "56-65"
+      - "66+"
+    gender:
+      - "Male"
+      - "Female"
+    education_level:
+      - "High School"
+      - "College"
+      - "Master"
+      - "Doctor"
+  conversation_type:
+    - "single_turn"
+    - "multi-turn"
+  output_format:
+    "json"
+    
+  
+
+on_execute:
+  round: 1
+  verbose: true
+
+

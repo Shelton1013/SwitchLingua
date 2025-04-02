@@ -176,7 +176,7 @@ DATA_GENERATION_PROMPT = ChatPromptTemplate.from_messages(
             - Education Level: {education_level}
 
             8. News Article:
-            - If news_article is provided, you must generate code-switched text based on the news article,like review/opinions/etc...
+            - If news_article is provided, you must generate code-switched text based on the news article,like review/opinions/conversations etc...
             - News Article: {news_article} \n
 
             9. The conversation type is {conversation_type}
@@ -323,7 +323,7 @@ REFINER_PROMPT = ChatPromptTemplate.from_messages(
             Here are the comments : {summary}
 
             Please refine the code-switched text based on the comments.
-            """
+            """,
         )
     ]
 )

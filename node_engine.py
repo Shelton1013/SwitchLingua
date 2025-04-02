@@ -32,7 +32,8 @@ dotenv.load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("AIPROXY_API_KEY")
 
 # SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(model="gpt-4o", temperature=1)
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-4o"
+
 
 def RunSampleAgent(state: AgentRunningState):
     SampleAgent = SAMPLE_AGENT_PROMPT | ChatOpenAI(
@@ -42,7 +43,7 @@ def RunSampleAgent(state: AgentRunningState):
     if response.get("type"):
         return {"response": ""}
     # print(response.content)
-    # copy the state and add the response
+    # copy the state and add the responsev
     payload = state.copy()
     payload["response"] = response
     with jsonlines.open("result/simple_agent_result_new.jsonl", "a") as f:
@@ -74,14 +75,21 @@ def RunUseToolsAgent(state: AgentRunningState):
 
 
 def RunDataGenerationAgent(state: AgentRunningState):
-    if not state.get("news_article"):
+    if state.get("topic") not in state["news_dict"]:
         state["news_article"] = ""
+    else:
+        if state.get("topic") in state["news_hash"]:
+            state["news_article"] = random.choice(state["news_dict"][state["topic"]])
+        else:
+            state["news_article"] = random.choice(state["news_dict"][state["topic"]])
+            state["news_hash"].add(state["topic"])
     DataGenerationAgent = DATA_GENERATION_PROMPT | ChatOpenAI(
         model=MODEL, temperature=0.7, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(GenerationResponse)
     response = DataGenerationAgent.invoke(state)
+    retry = 4
     if not response.get("instances"):
-        while retry:= 4 > 0:
+        while retry > 0:
             response = DataGenerationAgent.invoke(state)
             if response.get("instances"):
                 break
@@ -148,13 +156,15 @@ def SummarizeResult(state: AgentRunningState):
 
 
 def AcceptanceAgent(state: AgentRunningState):
-    with jsonlines.open("result/can_eng_mar10th_4o_latest.jsonl", "a") as f:
+    del state["news_article"]
+    del state["news_hash"]
+    del state["news_dict"]
+    with jsonlines.open("budget_res/can_eng_Apr2nd_4o_augmented.jsonl", "a") as f:
         f.write(state)
     return
 
 
 def RunRefinerAgent(state: AgentRunningState):
-    
 
     RefinerAgent = REFINER_PROMPT | ChatOpenAI(
         model=MODEL, temperature=0.1, base_url="https://api.bianxie.ai/v1/"
@@ -169,4 +179,3 @@ if __name__ == "__main__":
         model="gpt-4o", temperature=0.1, base_url="https://api.bianxie.ai/v1/"
     ).with_structured_output(FluencyResponse)
     response = FluencyAgent.invoke(state)
-

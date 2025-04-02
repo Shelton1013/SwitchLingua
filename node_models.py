@@ -56,3 +56,6 @@ class AgentRunningState(TypedDict):
     score: float
 
     refine_count: Annotated[int, add]
+
+    news_hash: set
+    news_dict: dict
