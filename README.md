@@ -22,10 +22,8 @@
   </a>
 </div>
 
-# 🚀 Embracing Multilingualism: Optimizing LLM Agents
-for Code-Switching Data Synthesis via Linguistic
+# 🚀 Embracing Multilingualism: Optimizing LLM Agents for Code-Switching Data Synthesis via Linguistic
 Principles and Tool Integration
-
 > **Short Motto**: "Empowering Multilingual Research with High-Quality Code-Switched Datasets!" 🗣️🌍
 
 Welcome to **CS Dataset**, an open-source project aimed at providing high-quality **code-switched** (multilingual mixed) data for **NLP** and **linguistic** research. Our dataset is generated using advanced linguistic constraints, state-of-the-art Large Language Models (LLMs), and sociocultural insights — ensuring **naturalness, fluency, and diversity** in every sentence.
