@@ -1,0 +1,46 @@
+{
+  "topic": "sports",
+  "tense": "Present",
+  "perspective": "Third Person",
+  "cs_ratio": "30%",
+  "gender": "Female",
+  "age": "56-65",
+  "education_level": "High School",
+  "first_language": "Arabic",
+  "second_language": "English",
+  "conversation_type": "single_turn",
+  "cs_function": "Expressive",
+  "cs_type": "Intersentential",
+  "data_generation_result": [
+    "الفريق بدأ المباراة بشكل قوي جدًا وحقق تقدم كبير في البداية. But then the defense couldn't keep up and things started to fall apart.",
+    "الجمهور كان متحمس جدًا في الربع الأول. The mood shifted quickly after halftime when the game got tense.",
+    "الخسارة كانت صعبة على الجميع، خصوصًا بعد الأداء القوي في البداية. It's frustrating to see them lose after such a promising start."
+  ],
+  "fluency_result": {
+    "fluency_score": 9,
+    "errors": [],
+    "summary": "The code-switched text demonstrates high fluency. All switches occur at clause or sentence boundaries, respecting both the Free Morpheme and Equivalence Constraints. There are no grammatical errors or unnatural mixing of word orders. The transitions between Arabic and English are smooth and natural, making the overall text coherent and easy to follow."
+  },
+  "naturalness_result": {
+    "naturalness_score": 8.5,
+    "observations": {
+      "sentence_1": "The switch from Arabic to English occurs at a sentence boundary, which is common and natural for bilingual speakers. Both parts are idiomatic in their respective languages.",
+      "sentence_2": "Again, the switch is at a sentence boundary. The English sentence is a natural follow-up to the Arabic one, and the mood shift is expressed idiomatically.",
+      "sentence_3": "The switch is at a sentence boundary. Both the Arabic and English parts are natural and express frustration in a way that bilingual speakers often do."
+    },
+    "summary": "The code-switching in these sentences is highly natural, primarily using inter-sentential switching, which is common among bilingual speakers. The transitions between Arabic and English are smooth and occur at logical points, such as after a complete thought or sentence. The content in both languages is idiomatic and authentic, reflecting real-life bilingual speech patterns. There are no awkward or forced switches, and the emotional tone is consistent across both languages. Overall, this is a strong example of natural code-switching."
+  },
+  "cs_ratio_result": {
+    "ratio_score": 7,
+    "computed_ratio": "63% Arabic : 37% English",
+    "notes": "The code-switched text contains approximately 63% Arabic words and 37% English words. The desired embedded language ratio is 30%, so the actual English usage is slightly higher than target, but still reasonably close. The code-switching is fairly balanced, with a slight overuse of English compared to the desired ratio."
+  },
+  "social_cultural_result": {
+    "socio_cultural_score": 9,
+    "issues": "No major socio-cultural issues detected. The code-switching between Arabic and English is natural and reflects common usage in sports discussions among bilingual speakers. The expressions used in both languages are appropriate and do not contain offensive or culturally insensitive terms. The only minor point is that the English segments could be slightly more localized to reflect regional sports jargon, but this is not a significant issue.",
+    "summary": "The code-switched text is culturally appropriate and uses natural expressions in both Arabic and English. No significant issues found."
+  },
+  "summary": "\n    data_generation_result: [\"الفريق بدأ المباراة بشكل قوي جدًا وحقق تقدم كبير في البداية. But then the defense couldn't keep up and things started to fall apart.\", 'الجمهور كان متحمس جدًا في الربع الأول. The mood shifted quickly after halftime when the game got tense.', \"الخسارة كانت صعبة على الجميع، خصوصًا بعد الأداء القوي في البداية. It's frustrating to see them lose after such a promising start.\"]\n    Fluency Result: {'fluency_score': 9, 'errors': [], 'summary': 'The code-switched text demonstrates high fluency. All switches occur at clause or sentence boundaries, respecting both the Free Morpheme and Equivalence Constraints. There are no grammatical errors or unnatural mixing of word orders. The transitions between Arabic and English are smooth and natural, making the overall text coherent and easy to follow.'}\n    Naturalness Result: {'naturalness_score': 8.5, 'observations': {'sentence_1': 'The switch from Arabic to English occurs at a sentence boundary, which is common and natural for bilingual speakers. Both parts are idiomatic in their respective languages.', 'sentence_2': 'Again, the switch is at a sentence boundary. The English sentence is a natural follow-up to the Arabic one, and the mood shift is expressed idiomatically.', 'sentence_3': 'The switch is at a sentence boundary. Both the Arabic and English parts are natural and express frustration in a way that bilingual speakers often do.'}, 'summary': 'The code-switching in these sentences is highly natural, primarily using inter-sentential switching, which is common among bilingual speakers. The transitions between Arabic and English are smooth and occur at logical points, such as after a complete thought or sentence. The content in both languages is idiomatic and authentic, reflecting real-life bilingual speech patterns. There are no awkward or forced switches, and the emotional tone is consistent across both languages. Overall, this is a strong example of natural code-switching.'}\n    CSRatio Result: {'ratio_score': 7, 'computed_ratio': '63% Arabic : 37% English', 'notes': 'The code-switched text contains approximately 63% Arabic words and 37% English words. The desired embedded language ratio is 30%, so the actual English usage is slightly higher than target, but still reasonably close. The code-switching is fairly balanced, with a slight overuse of English compared to the desired ratio.'}\n    Social Cultural Result: {'socio_cultural_score': 9, 'issues': 'No major socio-cultural issues detected. The code-switching between Arabic and English is natural and reflects common usage in sports discussions among bilingual speakers. The expressions used in both languages are appropriate and do not contain offensive or culturally insensitive terms. The only minor point is that the English segments could be slightly more localized to reflect regional sports jargon, but this is not a significant issue.', 'summary': 'The code-switched text is culturally appropriate and uses natural expressions in both Arabic and English. No significant issues found.'}\n    ",
+  "score": 8.475,
+  "refine_count": 0
+}
