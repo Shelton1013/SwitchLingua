@@ -11,17 +11,22 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/Shelton1013/SwitchLingua/issues">
+  <!-- <a href="https://github.com/Shelton1013/SwitchLingua/issues">
     <img src="https://img.shields.io/github/issues/Shelton1013/SwitchLingua" alt="GitHub issues">
-  </a>
-  <a href="https://github.com/Bauhinia-AI/Biosphere3/network">
+  </a> -->
+  <!-- <a href="https://github.com/Bauhinia-AI/Biosphere3/network">
     <img src="https://img.shields.io/github/forks/Shelton1013/SwitchLingua" alt="GitHub forks">
-  </a>
+  </a> -->
   <a href="https://github.com/Shelton1013/SwitchLingua/stargazers">
     <img src="https://img.shields.io/github/stars/Shelton1013/SwitchLingua" alt="GitHub stars">
   </a>
-  <a href="https://huggingface.co/datasets/Shelton1013/SwitchLingua">
-    <img src="https://img.shields.io/badge/HuggingFace-dataset-yellow?logo=HuggingFace" alt="Hugging Face">
+  <a href="https://huggingface.co/datasets/Shelton1013/SwitchLingua_text">
+    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_text-yellow?logo=Hugging%20Face
+    " alt="Hugging Face">
+  </a>
+  <a href="https://huggingface.co/datasets/Shelton1013/SwitchLingua_audio">
+    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_audio-yellow?logo=Hugging%20Face
+    " alt="Hugging Face">
   </a>
 </div>
 
@@ -137,7 +142,6 @@ Based on the generated text, we curate the audio dataset sourced from 174 speake
 
 
 
-For more details, see [docs/DataFormat.md](docs/DataFormat.md).
 
 
 
