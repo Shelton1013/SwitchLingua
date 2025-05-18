@@ -21,12 +21,10 @@
     <img src="https://img.shields.io/github/stars/Shelton1013/SwitchLingua" alt="GitHub stars">
   </a>
   <a href="https://huggingface.co/datasets/Shelton1013/SwitchLingua_text">
-    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_text-yellow?logo=Hugging%20Face
-    " alt="Hugging Face">
+    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_text-yellow?logo=Hugging%20Face" alt="Hugging Face">
   </a>
   <a href="https://huggingface.co/datasets/Shelton1013/SwitchLingua_audio">
-    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_audio-yellow?logo=Hugging%20Face
-    " alt="Hugging Face">
+    <img src="https://img.shields.io/badge/HuggingFace-SwitchLingua_audio-yellow?logo=Hugging%20Face" alt="Hugging Face">
   </a>
 </div>
 
